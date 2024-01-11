@@ -24,12 +24,21 @@ func main() {
 
 	// Migrate the schema
 	db.AutoMigrate(&models.Region{})
+	db.AutoMigrate(&models.District{})
 
+	// region
 	regionRepo := repositories.NewRegionRepository(db)
 	regionHandler := apis.NewRegionHandler(regionRepo)
 
+	// district
+	districtRepo := repositories.NewDistrictRepository(db)
+	districtHandler := apis.NewDistrictRepository(districtRepo)
+
 	router := gin.Default()
+	// region
 	router.GET("/regions", regionHandler.GetAllRegions)
 
+	// district
+	router.GET("/districts", districtHandler.GetAllDistricts)
 	router.Run("localhost:8080")
 }

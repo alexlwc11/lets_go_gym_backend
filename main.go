@@ -25,6 +25,7 @@ func main() {
 	// Migrate the schema
 	db.AutoMigrate(&models.Region{})
 	db.AutoMigrate(&models.District{})
+	db.AutoMigrate(&models.SportsCenter{})
 
 	// region
 	regionRepo := repositories.NewRegionRepository(db)
@@ -34,11 +35,19 @@ func main() {
 	districtRepo := repositories.NewDistrictRepository(db)
 	districtHandler := apis.NewDistrictRepository(districtRepo)
 
+	// sports center
+	sportsCenterRepo := repositories.NewSportsCenterRepository(db)
+	sportsCenterHandler := apis.NewSportsCenterRepository(sportsCenterRepo)
+
 	router := gin.Default()
 	// region
 	router.GET("/regions", regionHandler.GetAllRegions)
 
 	// district
 	router.GET("/districts", districtHandler.GetAllDistricts)
+
+	// sports center
+	router.GET("/sports_centers", sportsCenterHandler.GetAllSportsCenters)
+
 	router.Run("localhost:8080")
 }

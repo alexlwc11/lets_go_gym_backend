@@ -12,7 +12,7 @@ type DistrictHandler struct {
 }
 
 func NewDistrictRepository(districtRepo *repositories.DistrictRepository) *DistrictHandler {
-
+	return &DistrictHandler{DistrictRepo: districtRepo}
 }
 
 func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {

@@ -1,10 +1,8 @@
 package models
 
-import "gorm.io/gorm"
-
 type Region struct {
-	gorm.Model
-	Code   string
-	NameEn string
-	NameZh string
+	BaseModel
+	Code   string `json:"code"`
+	NameEn string `json:"name_en"`
+	NameZh string `json:"name_zh"`
 }

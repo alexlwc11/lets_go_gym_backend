@@ -1,10 +1,9 @@
 package models
 
-import "gorm.io/gorm"
-
 type District struct {
-	gorm.Model
-	RegionID uint
-	NameEn   string
-	NameZh   string
+	BaseModel
+	RegionID uint   `json:"region_id"`
+	Region   Region `gorm:"<-:create;references:RegionID"`
+	NameEn   string `json:"name_en"`
+	NameZh   string `json:"name_zh"`
 }

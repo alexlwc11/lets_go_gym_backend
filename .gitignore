@@ -26,4 +26,8 @@
 # Go workspace file
 go.work
 
+# files contain credentials
 configs/private_config.yaml
+
+# files contain data
+data/

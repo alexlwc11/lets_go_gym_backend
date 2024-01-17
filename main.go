@@ -56,10 +56,12 @@ func proceedSchemaMigration(db *gorm.DB) {
 	db.AutoMigrate(&models.Region{})
 	db.AutoMigrate(&models.District{})
 	db.AutoMigrate(&models.SportsCenter{})
+	db.AutoMigrate(&models.AppVersion{})
+	db.AutoMigrate(&models.DataInfo{})
 }
 
 func loadDefaultDataIfNeeded(db *gorm.DB) {
-	if db.First(&models.Region{}) == nil {
+	if db.Take(&models.Region{}).RowsAffected == 0 {
 		defaultRegions, err := LoadData.LoadRegions("./data/regions.json")
 		if err != nil {
 			println("Failed to load default regions data")
@@ -68,8 +70,8 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 		db.Create(defaultRegions)
 	}
 
-	if db.First(&models.District{}) == nil {
-		defaultDistricts, err := LoadData.LoadRegions("./data/districts.json")
+	if db.Take(&models.District{}).RowsAffected == 0 {
+		defaultDistricts, err := LoadData.LoadDistricts("./data/districts.json")
 		if err != nil {
 			println("Failed to load default districts data")
 		}
@@ -77,8 +79,8 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 		db.Create(defaultDistricts)
 	}
 
-	if db.First(&models.SportsCenter{}) == nil {
-		defaultSportsCenters, err := LoadData.LoadRegions("./data/sports_centers.json")
+	if db.Take(&models.SportsCenter{}).RowsAffected == 0 {
+		defaultSportsCenters, err := LoadData.LoadSportsCenters("./data/sports_centers.json")
 		if err != nil {
 			println("Failed to load default sports centers data")
 		}
@@ -101,6 +103,11 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	sportsCenterRepo := repositories.NewSportsCenterRepository(db)
 	sportsCenterHandler := apis.NewSportsCenterRepository(sportsCenterRepo)
 
+	// app info
+	appVersionRepo := repositories.NewAppVersionRepository(db)
+	dataInfoRepo := repositories.NewDataInfoRepository(db)
+	appInfoHandler := apis.NewAppInfoHandler(appVersionRepo, dataInfoRepo)
+
 	router := gin.Default()
 	// region
 	setupRegionEndpoints(router, regionHandler)
@@ -110,6 +117,9 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 
 	// sports center
 	setupSportsCenterEndpoints(router, sportsCenterHandler)
+
+	// app info
+	setupAppInfoEndpoints(router, appInfoHandler)
 
 	return router
 }
@@ -124,4 +134,8 @@ func setupDistrictEndpoints(engine *gin.Engine, districtHandler *apis.DistrictHa
 
 func setupSportsCenterEndpoints(engine *gin.Engine, sportsCenterHandler *apis.SportsCenterHandler) {
 	engine.GET("/sports_centers", sportsCenterHandler.GetAllSportsCenters)
+}
+
+func setupAppInfoEndpoints(engine *gin.Engine, appInfoHandler *apis.AppInfoHandler) {
+	engine.GET("/app_info", appInfoHandler.GetAppInfo)
 }

@@ -21,5 +21,5 @@ func (dh *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	}
 
-	c.JSON(http.StatusOK, sportsCenters)
+	c.JSON(http.StatusOK, gin.H{"sports_centers": sportsCenters})
 }

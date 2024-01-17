@@ -21,5 +21,5 @@ func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	}
 
-	c.JSON(http.StatusOK, districts)
+	c.JSON(http.StatusOK, gin.H{"districts": districts})
 }

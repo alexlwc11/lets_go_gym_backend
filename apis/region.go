@@ -22,5 +22,5 @@ func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, regions)
+	c.JSON(http.StatusOK, gin.H{"regions": regions})
 }

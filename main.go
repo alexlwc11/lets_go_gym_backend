@@ -109,6 +109,7 @@ func InitRouter(db *gorm.DB) *gin.Engine {
 	appInfoHandler := apis.NewAppInfoHandler(appVersionRepo, dataInfoRepo)
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
 	// region
 	setupRegionEndpoints(router, regionHandler)
 

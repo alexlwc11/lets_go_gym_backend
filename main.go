@@ -135,6 +135,7 @@ func setupDistrictEndpoints(engine *gin.Engine, districtHandler *apis.DistrictHa
 
 func setupSportsCenterEndpoints(engine *gin.Engine, sportsCenterHandler *apis.SportsCenterHandler) {
 	engine.GET("/sports_centers", sportsCenterHandler.GetAllSportsCenters)
+	engine.GET("/sports_centers/:id/details_url", sportsCenterHandler.GetDetailsUrl)
 }
 
 func setupAppInfoEndpoints(engine *gin.Engine, appInfoHandler *apis.AppInfoHandler) {

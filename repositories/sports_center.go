@@ -24,3 +24,14 @@ func (dr *SportsCenterRepository) FindAll() ([]models.SportsCenter, error) {
 
 	return sportsCenters, nil
 }
+
+func (dr *SportsCenterRepository) FindById(id uint) (*models.SportsCenter, error) {
+	var sportsCenter models.SportsCenter
+	result := dr.DB.Where("id = ?", id).Take(&sportsCenter)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &sportsCenter, nil
+}

@@ -19,19 +19,19 @@ func (dr *SportsCenterRepository) FindAll() ([]models.SportsCenter, error) {
 	result := dr.DB.Find(&sportsCenters)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return []models.SportsCenter{}, result.Error
 	}
 
 	return sportsCenters, nil
 }
 
-func (dr *SportsCenterRepository) FindById(id uint) (*models.SportsCenter, error) {
+func (dr *SportsCenterRepository) FindById(id uint) (models.SportsCenter, error) {
 	var sportsCenter models.SportsCenter
 	result := dr.DB.Where("id = ?", id).Take(&sportsCenter)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return models.SportsCenter{}, result.Error
 	}
 
-	return &sportsCenter, nil
+	return sportsCenter, nil
 }

@@ -4,7 +4,7 @@ type SportsCenter struct {
 	BaseModel
 	ExternalID   uint     `gorm:"<-:create" json:"external_id"`
 	DistrictID   uint     `gorm:"<-:create" json:"district_id"`
-	District     District `gorm:"foreignKey:ID;references:DistrictID;constraint:OnUpdate:CASCADE"`
+	District     District `gorm:"foreignKey:ID;references:DistrictID;constraint:OnUpdate:CASCADE" json:"-"`
 	NameEn       string   `json:"name_en"`
 	NameZh       string   `json:"name_zh"`
 	AddressEn    string   `json:"address_en"`

@@ -19,7 +19,7 @@ func (rr *RegionRepository) FindAll() ([]models.Region, error) {
 	result := rr.DB.Find(&regions)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return []models.Region{}, result.Error
 	}
 
 	return regions, nil

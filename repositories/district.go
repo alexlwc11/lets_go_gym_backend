@@ -19,7 +19,7 @@ func (dr *DistrictRepository) FindAll() ([]models.District, error) {
 	result := dr.DB.Find(&districts)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return []models.District{}, result.Error
 	}
 
 	return districts, nil

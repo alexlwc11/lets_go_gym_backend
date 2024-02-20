@@ -29,8 +29,8 @@ func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
 	}
 
 	appInfo := models.AppInfo{
-		AppVersion: *appVersion,
-		DataInfo:   *dataInfo,
+		AppVersion: appVersion,
+		DataInfo:   dataInfo,
 	}
 
 	c.JSON(http.StatusOK, appInfo)

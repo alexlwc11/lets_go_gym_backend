@@ -14,13 +14,13 @@ func NewAppVersionRepository(db *gorm.DB) *AppVersionRepository {
 	return &AppVersionRepository{DB: db}
 }
 
-func (avr *AppVersionRepository) FindAppVersion() (*models.AppVersion, error) {
+func (avr *AppVersionRepository) FindAppVersion() (models.AppVersion, error) {
 	var appVersion models.AppVersion
 	result := avr.DB.First(&appVersion)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return models.AppVersion{}, result.Error
 	}
 
-	return &appVersion, nil
+	return appVersion, nil
 }

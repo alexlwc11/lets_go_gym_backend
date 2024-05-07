@@ -26,11 +26,14 @@
 # Go workspace file
 go.work
 
+# vscode related
+.vscode/
+
+# idea
+.idea/
+
 # files contain credentials
 configs/private_config.yaml
 
 # files contain data
 data/
-
-# vscode related
-.vscode/

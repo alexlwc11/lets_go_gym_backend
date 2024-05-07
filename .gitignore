@@ -31,3 +31,6 @@ configs/private_config.yaml
 
 # files contain data
 data/
+
+# vscode related
+.vscode/

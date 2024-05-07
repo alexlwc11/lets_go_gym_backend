@@ -3,6 +3,7 @@ package apis
 import (
 	"lets_go_gym_backend/models"
 	"lets_go_gym_backend/repositories"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,12 +21,15 @@ func NewAppInfoHandler(appVersionRepo *repositories.AppVersionRepository, dataIn
 func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
 	appVersion, err := aih.AppVersionRepo.FindAppVersion()
 	if err != nil {
-		println("")
-		println(err.Error())
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 	dataInfo, err := aih.DataInfoRepo.FindDataInfo()
 	if err != nil {
-		println(err.Error())
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	appInfo := models.AppInfo{

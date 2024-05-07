@@ -1,7 +1,9 @@
 package apis
 
 import (
+	"lets_go_gym_backend/models"
 	repositories "lets_go_gym_backend/repositories"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,11 +17,19 @@ func NewDistrictRepository(districtRepo *repositories.DistrictRepository) *Distr
 	return &DistrictHandler{DistrictRepo: districtRepo}
 }
 
+type districtsOutDto struct {
+	Districts []models.District `json:"districts"`
+}
+
 func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {
 	districts, err := dh.DistrictRepo.FindAll()
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"districts": districts})
+	c.JSON(http.StatusOK, districtsOutDto{
+		Districts: districts,
+	})
 }

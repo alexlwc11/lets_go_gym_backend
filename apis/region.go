@@ -1,7 +1,9 @@
 package apis
 
 import (
+	"lets_go_gym_backend/models"
 	repositories "lets_go_gym_backend/repositories"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,12 +17,19 @@ func NewRegionHandler(regionRepo *repositories.RegionRepository) *RegionHandler 
 	return &RegionHandler{RegionRepo: regionRepo}
 }
 
+type regionsOutDto struct {
+	Region []models.Region `json:"regions"`
+}
+
 func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
 	regions, err := rh.RegionRepo.FindAll()
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"regions": regions})
+	c.JSON(http.StatusOK, regionsOutDto{
+		Region: regions,
+	})
 }

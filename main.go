@@ -6,6 +6,7 @@ import (
 	LoadData "lets_go_gym_backend/load_data"
 	"lets_go_gym_backend/models"
 	"lets_go_gym_backend/repositories"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -14,16 +15,16 @@ import (
 
 func main() {
 	// init database connection
-	db := InitDatabase()
+	db := initDatabase()
 
 	// init router
-	router := InitRouter(db)
+	router := initRouter(db)
 
 	router.Run("localhost:8080")
 }
 
 // Database
-func InitDatabase() *gorm.DB {
+func initDatabase() *gorm.DB {
 	mConfig, err := configs.InitConfig()
 	if err != nil {
 		panic("Failed to read config")
@@ -64,7 +65,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 	if db.Take(&models.Region{}).RowsAffected == 0 {
 		defaultRegions, err := LoadData.LoadRegions("./data/regions.json")
 		if err != nil {
-			println("Failed to load default regions data")
+			log.Println("Failed to load default regions data")
 		}
 
 		db.Create(defaultRegions)
@@ -73,7 +74,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 	if db.Take(&models.District{}).RowsAffected == 0 {
 		defaultDistricts, err := LoadData.LoadDistricts("./data/districts.json")
 		if err != nil {
-			println("Failed to load default districts data")
+			log.Println("Failed to load default districts data")
 		}
 
 		db.Create(defaultDistricts)
@@ -82,7 +83,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 	if db.Take(&models.SportsCenter{}).RowsAffected == 0 {
 		defaultSportsCenters, err := LoadData.LoadSportsCenters("./data/sports_centers.json")
 		if err != nil {
-			println("Failed to load default sports centers data")
+			log.Println("Failed to load default sports centers data")
 		}
 
 		db.Create(defaultSportsCenters)
@@ -90,7 +91,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 }
 
 // Router
-func InitRouter(db *gorm.DB) *gin.Engine {
+func initRouter(db *gorm.DB) *gin.Engine {
 	// region
 	regionRepo := repositories.NewRegionRepository(db)
 	regionHandler := apis.NewRegionHandler(regionRepo)

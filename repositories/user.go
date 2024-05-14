@@ -28,7 +28,7 @@ func (ur *UserRepository) CreateWithDeviceUUID(deviceUUID string) (models.User, 
 
 func (ur *UserRepository) FindByDeviceUUID(deviceUUID string) (models.User, error) {
 	var user models.User
-	err := ur.DB.Model(models.User{DeviceUUID: deviceUUID}).First(&user).Error
+	err := ur.DB.Where("device_uuid = ?", deviceUUID).First(&user).Error
 	if err != nil {
 		return models.User{}, err
 	}

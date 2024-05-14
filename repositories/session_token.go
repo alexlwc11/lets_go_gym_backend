@@ -49,7 +49,7 @@ func (str *SessionTokenRepository) CreateWithUserId(userId uint) (models.Session
 
 func (str *SessionTokenRepository) FindByValue(value string) (models.SessionToken, error) {
 	var token models.SessionToken
-	err := str.DB.Model(models.SessionToken{Token: models.Token{Value: value}}).First(&token).Error
+	err := str.DB.Where("value = ?", value).First(&token).Error
 	if err != nil {
 		return models.SessionToken{}, err
 	}

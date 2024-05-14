@@ -49,7 +49,7 @@ func (rtr *RefreshTokenRepository) CreateWithUserId(userId uint) (models.Refresh
 
 func (rtr *RefreshTokenRepository) FindByValue(value string) (models.RefreshToken, error) {
 	var token models.RefreshToken
-	err := rtr.DB.Model(models.RefreshToken{Token: models.Token{Value: value}}).First(&token).Error
+	err := rtr.DB.Where("value = ?", value).First(&token).Error
 	if err != nil {
 		return models.RefreshToken{}, err
 	}

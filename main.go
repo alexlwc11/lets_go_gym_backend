@@ -4,6 +4,7 @@ import (
 	"lets_go_gym_backend/apis"
 	"lets_go_gym_backend/configs"
 	LoadData "lets_go_gym_backend/load_data"
+	"lets_go_gym_backend/middleware"
 	"lets_go_gym_backend/models"
 	"lets_go_gym_backend/repositories"
 	"log"
@@ -120,42 +121,50 @@ func initRouter(db *gorm.DB) *gin.Engine {
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+	api := router.Group("/api")
 	// auth
-	setupAuthEndpoints(router, authHandler)
-
-	// region
-	setupRegionEndpoints(router, regionHandler)
-
-	// district
-	setupDistrictEndpoints(router, districtHandler)
-
-	// sports center
-	setupSportsCenterEndpoints(router, sportsCenterHandler)
+	setupAuthEndpoints(api, authHandler)
 
 	// app info
-	setupAppInfoEndpoints(router, appInfoHandler)
+	setupAppInfoEndpoints(api, appInfoHandler)
+
+	// This middleware applies to the endpoint setup below
+	api.Use(middleware.AuthRequired(sessionTokenRepo.FindByValue))
+
+	// region
+	regions := api.Group("/regions")
+	setupRegionEndpoints(regions, regionHandler)
+
+	// district
+	districts := api.Group("/districts")
+	setupDistrictEndpoints(districts, districtHandler)
+
+	// sports center
+	sportsCenters := api.Group("/sportsCenters")
+	setupSportsCenterEndpoints(sportsCenters, sportsCenterHandler)
 
 	return router
 }
 
-func setupAuthEndpoints(engine *gin.Engine, authHandler *apis.AuthHandler) {
+// Setup endpoints
+func setupAuthEndpoints(engine *gin.RouterGroup, authHandler *apis.AuthHandler) {
 	engine.POST("/register", authHandler.Register)
 	engine.POST("/signIn", authHandler.SignIn)
 }
 
-func setupRegionEndpoints(engine *gin.Engine, regionHandler *apis.RegionHandler) {
-	engine.GET("/regions", regionHandler.GetAllRegions)
-}
-
-func setupDistrictEndpoints(engine *gin.Engine, districtHandler *apis.DistrictHandler) {
-	engine.GET("/districts", districtHandler.GetAllDistricts)
-}
-
-func setupSportsCenterEndpoints(engine *gin.Engine, sportsCenterHandler *apis.SportsCenterHandler) {
-	engine.GET("/sports_centers", sportsCenterHandler.GetAllSportsCenters)
-	engine.GET("/sports_centers/:id/details_url", sportsCenterHandler.GetDetailsUrl)
-}
-
-func setupAppInfoEndpoints(engine *gin.Engine, appInfoHandler *apis.AppInfoHandler) {
+func setupAppInfoEndpoints(engine *gin.RouterGroup, appInfoHandler *apis.AppInfoHandler) {
 	engine.GET("/app_info", appInfoHandler.GetAppInfo)
+}
+
+func setupRegionEndpoints(engine *gin.RouterGroup, regionHandler *apis.RegionHandler) {
+	engine.GET("/", regionHandler.GetAllRegions)
+}
+
+func setupDistrictEndpoints(engine *gin.RouterGroup, districtHandler *apis.DistrictHandler) {
+	engine.GET("/", districtHandler.GetAllDistricts)
+}
+
+func setupSportsCenterEndpoints(engine *gin.RouterGroup, sportsCenterHandler *apis.SportsCenterHandler) {
+	engine.GET("/", sportsCenterHandler.GetAllSportsCenters)
+	engine.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
 }

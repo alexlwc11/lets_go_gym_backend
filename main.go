@@ -54,6 +54,9 @@ func connectDatabase(config *configs.Config) (*gorm.DB, error) {
 }
 
 func proceedSchemaMigration(db *gorm.DB) {
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.SessionToken{})
+	db.AutoMigrate(&models.RefreshToken{})
 	db.AutoMigrate(&models.Region{})
 	db.AutoMigrate(&models.District{})
 	db.AutoMigrate(&models.SportsCenter{})
@@ -92,6 +95,12 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 
 // Router
 func initRouter(db *gorm.DB) *gin.Engine {
+	// auth
+	userRepo := repositories.NewUserRepository(db)
+	sessionTokenRepo := repositories.NewSessionTokenRepository(db)
+	refreshTokenRepo := repositories.NewRefreshTokenRepository(db)
+	authHandler := apis.NewAuthHandler(userRepo, sessionTokenRepo, refreshTokenRepo)
+
 	// region
 	regionRepo := repositories.NewRegionRepository(db)
 	regionHandler := apis.NewRegionHandler(regionRepo)
@@ -111,6 +120,9 @@ func initRouter(db *gorm.DB) *gin.Engine {
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+	// auth
+	setupAuthEndpoints(router, authHandler)
+
 	// region
 	setupRegionEndpoints(router, regionHandler)
 
@@ -124,6 +136,11 @@ func initRouter(db *gorm.DB) *gin.Engine {
 	setupAppInfoEndpoints(router, appInfoHandler)
 
 	return router
+}
+
+func setupAuthEndpoints(engine *gin.Engine, authHandler *apis.AuthHandler) {
+	engine.POST("/register", authHandler.Register)
+	engine.POST("/signIn", authHandler.SignIn)
 }
 
 func setupRegionEndpoints(engine *gin.Engine, regionHandler *apis.RegionHandler) {

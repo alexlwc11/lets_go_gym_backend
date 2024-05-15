@@ -150,6 +150,7 @@ func initRouter(db *gorm.DB) *gin.Engine {
 func setupAuthEndpoints(engine *gin.RouterGroup, authHandler *apis.AuthHandler) {
 	engine.POST("/register", authHandler.Register)
 	engine.POST("/signIn", authHandler.SignIn)
+	engine.POST("/refresh", authHandler.Refresh)
 }
 
 func setupAppInfoEndpoints(engine *gin.RouterGroup, appInfoHandler *apis.AppInfoHandler) {

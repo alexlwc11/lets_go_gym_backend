@@ -23,7 +23,6 @@ func AuthRequired(tokenProvider TokenProviderFunc) gin.HandlerFunc {
 			return
 		}
 
-		log.Println(tokenValue)
 		token, err := tokenProvider(tokenValue)
 		if err != nil {
 			log.Println(err.Error())
@@ -31,7 +30,6 @@ func AuthRequired(tokenProvider TokenProviderFunc) gin.HandlerFunc {
 			return
 		}
 
-		log.Println(token.Value)
 		if err := isTokenExpired(token); err != nil {
 			log.Println(errors.New("invalid token"))
 			c.AbortWithStatus(http.StatusForbidden)

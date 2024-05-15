@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"errors"
 	"lets_go_gym_backend/repositories"
 	"log"
 	"net/http"
@@ -94,9 +95,42 @@ func (ah *AuthHandler) SignIn(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	log.Println(user.ID);
 
 	outDto, err := ah.generateTokenOutDtoWithUserId(user.ID)
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, outDto)
+}
+
+type refreshInDto struct {
+	RefreshToken string
+}
+
+func (ah *AuthHandler) Refresh(c *gin.Context) {
+	var refreshToken refreshInDto
+	if err := c.BindJSON(&refreshToken); err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	token, err := ah.RefreshTokenRepository.FindByValue(refreshToken.RefreshToken)
+	if err != nil {
+		log.Println(err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	if token.ExpiredAt.Before(time.Now()) {
+		log.Println(errors.New("token expired"))
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	outDto, err := ah.generateTokenOutDtoWithUserId(token.UserID)
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)

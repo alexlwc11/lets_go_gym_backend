@@ -3,6 +3,7 @@ package main
 import (
 	"lets_go_gym_backend/apis"
 	"lets_go_gym_backend/configs"
+	"lets_go_gym_backend/docs"
 	LoadData "lets_go_gym_backend/load_data"
 	"lets_go_gym_backend/middleware"
 	"lets_go_gym_backend/models"
@@ -12,7 +13,31 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	_ "lets_go_gym_backend/docs"
+
+	SwaggerFiles "github.com/swaggo/files"
+	GinSwagger "github.com/swaggo/gin-swagger"
 )
+
+//	@title						Let's go gym API
+//	@version					1.0
+//	@description				Let's go gym API endpoints.
+//
+//	@contact.name				API Support
+//	@contact.url				http://www.swagger.io/support
+//	@contact.email				support@swagger.io
+//
+//	@license.name				Apache 2.0
+//	@license.url				http://www.apache.org/licenses/LICENSE-2.0.html
+//
+//	@host						localhost:8080
+//	@BasePath					/api/v1
+//
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type in format of "Bearer --TOKEN--".
 
 func main() {
 	// init database connection
@@ -94,6 +119,10 @@ func loadDefaultDataIfNeeded(db *gorm.DB) {
 	}
 }
 
+const (
+	basePath = "/api/v1"
+)
+
 // Router
 func initRouter(db *gorm.DB) *gin.Engine {
 	// auth
@@ -121,27 +150,32 @@ func initRouter(db *gorm.DB) *gin.Engine {
 
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
-	api := router.Group("/api")
-	// auth
-	setupAuthEndpoints(api, authHandler)
+	docs.SwaggerInfo.BasePath = basePath
+	v1 := router.Group(basePath)
+	{
+		// auth
+		setupAuthEndpoints(v1, authHandler)
 
-	// app info
-	setupAppInfoEndpoints(api, appInfoHandler)
+		// app info
+		setupAppInfoEndpoints(v1, appInfoHandler)
 
-	// This middleware applies to the endpoints setup below
-	api.Use(middleware.AuthRequired(sessionTokenRepo.FindByValue))
+		// This middleware applies to the endpoints setup below
+		v1.Use(middleware.AuthRequired(sessionTokenRepo.FindByValue))
 
-	// region
-	regions := api.Group("/regions")
-	setupRegionEndpoints(regions, regionHandler)
+		// region
+		regions := v1.Group("/regions")
+		setupRegionEndpoints(regions, regionHandler)
 
-	// district
-	districts := api.Group("/districts")
-	setupDistrictEndpoints(districts, districtHandler)
+		// district
+		districts := v1.Group("/districts")
+		setupDistrictEndpoints(districts, districtHandler)
 
-	// sports center
-	sportsCenters := api.Group("/sportsCenters")
-	setupSportsCenterEndpoints(sportsCenters, sportsCenterHandler)
+		// sports center
+		sportsCenters := v1.Group("/sports_centers")
+		setupSportsCenterEndpoints(sportsCenters, sportsCenterHandler)
+	}
+
+	router.GET("swagger/*any", GinSwagger.WrapHandler(SwaggerFiles.Handler))
 
 	return router
 }
@@ -149,7 +183,7 @@ func initRouter(db *gorm.DB) *gin.Engine {
 // Setup endpoints
 func setupAuthEndpoints(engine *gin.RouterGroup, authHandler *apis.AuthHandler) {
 	engine.POST("/register", authHandler.Register)
-	engine.POST("/signIn", authHandler.SignIn)
+	engine.POST("/sign_in", authHandler.SignIn)
 	engine.POST("/refresh", authHandler.Refresh)
 }
 
@@ -158,14 +192,14 @@ func setupAppInfoEndpoints(engine *gin.RouterGroup, appInfoHandler *apis.AppInfo
 }
 
 func setupRegionEndpoints(engine *gin.RouterGroup, regionHandler *apis.RegionHandler) {
-	engine.GET("/", regionHandler.GetAllRegions)
+	engine.GET("", regionHandler.GetAllRegions)
 }
 
 func setupDistrictEndpoints(engine *gin.RouterGroup, districtHandler *apis.DistrictHandler) {
-	engine.GET("/", districtHandler.GetAllDistricts)
+	engine.GET("", districtHandler.GetAllDistricts)
 }
 
 func setupSportsCenterEndpoints(engine *gin.RouterGroup, sportsCenterHandler *apis.SportsCenterHandler) {
-	engine.GET("/", sportsCenterHandler.GetAllSportsCenters)
+	engine.GET("", sportsCenterHandler.GetAllSportsCenters)
 	engine.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
 }

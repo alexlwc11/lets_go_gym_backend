@@ -18,6 +18,15 @@ func NewAppInfoHandler(appVersionRepo *repositories.AppVersionRepository, dataIn
 	return &AppInfoHandler{AppVersionRepo: appVersionRepo, DataInfoRepo: dataInfoRepo}
 }
 
+// GetAppInfo godoc
+//
+//	@Summary		Get app info
+//	@Description	Get latest app info
+//	@Tags			AppInfo
+//	@Produce		json
+//	@Success		200	{object}	models.AppInfo
+//	@Failure		500
+//	@Router			/app_info [get]
 func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
 	appVersion, err := aih.AppVersionRepo.FindAppVersion()
 	if err != nil {

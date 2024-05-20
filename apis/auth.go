@@ -32,7 +32,7 @@ func NewAuthHandler(
 // InDto for [Register] and [SignIn]
 // TODO support other sign up methods e.g. email & password
 type userInfoInDto struct {
-	DeviceUUID string
+	DeviceUUID string `json:"device_uuid"`
 }
 
 // OutDto for [Register] and [SignIn]
@@ -43,6 +43,17 @@ type sessionTokenOutDto struct {
 	RefreshExpiredAt time.Time `json:"refresh_expired_at"`
 }
 
+// Register godoc
+//
+//	@Summary		Register
+//	@Description	New user registration
+//	@Tags			Auth
+//	@Accept			json
+//	@Param			user_info	body	userInfoInDto	true	"User info for registration"
+//	@Produce		json
+//	@Success		200	{object}	sessionTokenOutDto
+//	@Failure		500
+//	@Router			/register [post]
 func (ah *AuthHandler) Register(c *gin.Context) {
 	// Create new user with device UUID
 	var userCred userInfoInDto
@@ -75,6 +86,17 @@ func (ah *AuthHandler) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, outDto)
 }
 
+// SignIn godoc
+//
+//	@Summary		Sign in
+//	@Description	Existing user sign in
+//	@Tags			Auth
+//	@Accept			json
+//	@Param			user_info	body	userInfoInDto	true	"User info for signing in"
+//	@Produce		json
+//	@Success		200	{object}	sessionTokenOutDto
+//	@Failure		500
+//	@Router			/sign_in [post]
 func (ah *AuthHandler) SignIn(c *gin.Context) {
 	var userCred userInfoInDto
 	if err := c.BindJSON(&userCred); err != nil {
@@ -107,9 +129,20 @@ func (ah *AuthHandler) SignIn(c *gin.Context) {
 }
 
 type refreshInDto struct {
-	RefreshToken string
+	RefreshToken string `json:"refresh_token"`
 }
 
+// Refresh godoc
+//
+//	@Summary		Refresh
+//	@Description	Get new set of tokens with refresh token
+//	@Tags			Auth
+//	@Accept			json
+//	@Param			refresh_token	body	refreshInDto	true	"Refresh token"
+//	@Produce		json
+//	@Success		200	{object}	sessionTokenOutDto
+//	@Failure		500
+//	@Router			/refresh [post]
 func (ah *AuthHandler) Refresh(c *gin.Context) {
 	var refreshToken refreshInDto
 	if err := c.BindJSON(&refreshToken); err != nil {

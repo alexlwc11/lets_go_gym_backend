@@ -1,0 +1,311 @@
+basePath: /api/v1
+definitions:
+  apis.detailsUrlOutDto:
+    properties:
+      url:
+        type: string
+    type: object
+  apis.districtsOutDto:
+    properties:
+      districts:
+        items:
+          $ref: '#/definitions/models.District'
+        type: array
+    type: object
+  apis.refreshInDto:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  apis.regionsOutDto:
+    properties:
+      regions:
+        items:
+          $ref: '#/definitions/models.Region'
+        type: array
+    type: object
+  apis.sessionTokenOutDto:
+    properties:
+      refresh_expired_at:
+        type: string
+      refresh_token:
+        type: string
+      session_expired_at:
+        type: string
+      session_token:
+        type: string
+    type: object
+  apis.sportsCentersOutDto:
+    properties:
+      sports_centers:
+        items:
+          $ref: '#/definitions/models.SportsCenter'
+        type: array
+    type: object
+  apis.userInfoInDto:
+    properties:
+      device_uuid:
+        type: string
+    type: object
+  models.AppInfo:
+    properties:
+      data_info:
+        $ref: '#/definitions/models.DataInfo'
+      latest_build_version:
+        type: integer
+      minimum_build_version:
+        type: integer
+    type: object
+  models.DataInfo:
+    properties:
+      district_data_last_updated_at:
+        type: string
+      region_data_last_updated_at:
+        type: string
+      sports_center_data_last_updated_at:
+        type: string
+    type: object
+  models.District:
+    properties:
+      id:
+        type: integer
+      name_en:
+        type: string
+      name_zh:
+        type: string
+      region_id:
+        type: integer
+    type: object
+  models.Region:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      name_en:
+        type: string
+      name_zh:
+        type: string
+    type: object
+  models.SportsCenter:
+    properties:
+      address_en:
+        type: string
+      address_zh:
+        type: string
+      district_id:
+        type: integer
+      external_id:
+        type: integer
+      hourly_quota:
+        type: integer
+      id:
+        type: integer
+      latitude_dd:
+        type: string
+      latitude_dms:
+        type: string
+      longitude_dd:
+        type: string
+      longitude_dms:
+        type: string
+      monthly_quota:
+        type: integer
+      name_en:
+        type: string
+      name_zh:
+        type: string
+      phone_numbers:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Let's go gym API endpoints.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Let's go gym API
+  version: "1.0"
+paths:
+  /app_info:
+    get:
+      description: Get latest app info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AppInfo'
+        "500":
+          description: Internal Server Error
+      summary: Get app info
+      tags:
+      - AppInfo
+  /districts:
+    get:
+      description: Get latest districts data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.districtsOutDto'
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get all districts
+      tags:
+      - Districts
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: Get new set of tokens with refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/apis.refreshInDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.sessionTokenOutDto'
+        "500":
+          description: Internal Server Error
+      summary: Refresh
+      tags:
+      - Auth
+  /regions:
+    get:
+      description: Get latest regions data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.regionsOutDto'
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get all regions
+      tags:
+      - Regions
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: New user registration
+      parameters:
+      - description: User info for registration
+        in: body
+        name: user_info
+        required: true
+        schema:
+          $ref: '#/definitions/apis.userInfoInDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.sessionTokenOutDto'
+        "500":
+          description: Internal Server Error
+      summary: Register
+      tags:
+      - Auth
+  /sign_in:
+    post:
+      consumes:
+      - application/json
+      description: Existing user sign in
+      parameters:
+      - description: User info for signing in
+        in: body
+        name: user_info
+        required: true
+        schema:
+          $ref: '#/definitions/apis.userInfoInDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.sessionTokenOutDto'
+        "500":
+          description: Internal Server Error
+      summary: Sign in
+      tags:
+      - Auth
+  /sports_centers:
+    get:
+      description: getting latest sports centers data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.sportsCentersOutDto'
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get all sports centers
+      tags:
+      - Sports centers
+  /sports_centers/{id}/details_url:
+    get:
+      description: Get the details url for specified sports center
+      parameters:
+      - description: Sports center ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.detailsUrlOutDto'
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get details url
+      tags:
+      - Sports centers
+securityDefinitions:
+  BearerAuth:
+    description: Type in format of "Bearer --TOKEN--".
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -21,6 +21,17 @@ type regionsOutDto struct {
 	Region []models.Region `json:"regions"`
 }
 
+// GetAllRegions godoc
+//
+//	@Summary		Get all regions
+//	@Description	Get latest regions data
+//	@Tags			Regions
+//	@Produce		json
+//	@Success		200	{object}	regionsOutDto
+//	@Failure		403
+//	@Failure		500
+//	@Security		BearerAuth
+//	@Router			/regions [get]
 func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
 	regions, err := rh.RegionRepo.FindAll()
 	if err != nil {

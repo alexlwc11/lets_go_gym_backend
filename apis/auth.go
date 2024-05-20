@@ -37,10 +37,10 @@ type userInfoInDto struct {
 
 // OutDto for [Register] and [SignIn]
 type sessionTokenOutDto struct {
-	SessionToken     string
-	SessionExpiredAt time.Time
-	RefreshToken     string
-	RefreshExpiredAt time.Time
+	SessionToken     string    `json:"session_token"`
+	SessionExpiredAt time.Time `json:"session_expired_at"`
+	RefreshToken     string    `json:"refresh_token"`
+	RefreshExpiredAt time.Time `json:"refresh_expired_at"`
 }
 
 func (ah *AuthHandler) Register(c *gin.Context) {

@@ -128,7 +128,7 @@ func initRouter(db *gorm.DB) *gin.Engine {
 	// app info
 	setupAppInfoEndpoints(api, appInfoHandler)
 
-	// This middleware applies to the endpoint setup below
+	// This middleware applies to the endpoints setup below
 	api.Use(middleware.AuthRequired(sessionTokenRepo.FindByValue))
 
 	// region

@@ -1,7 +1,6 @@
 package apis
 
 import (
-	"fmt"
 	"lets_go_gym_backend/models"
 	repositories "lets_go_gym_backend/repositories"
 	"log"
@@ -47,7 +46,7 @@ func (dh *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	sportsCenter, err := dh.SportsCenterRepo.FindById(uint(id))
+	url, err := dh.SportsCenterRepo.FindDetailsUrlById(uint(id))
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -55,10 +54,6 @@ func (dh *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, detailsUrlOutDto{
-		Url: generateDetailsUrl(sportsCenter.ExternalID),
+		Url: url,
 	})
-}
-
-func generateDetailsUrl(externalId uint) string {
-	return fmt.Sprintf("https://www.lcsd.gov.hk/clpss/tc/webApp/FitnessRoomDetails.do?id=%d", externalId)
 }

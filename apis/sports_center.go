@@ -22,6 +22,17 @@ type sportsCentersOutDto struct {
 	SportsCenters []models.SportsCenter `json:"sports_centers"`
 }
 
+// GetAllSportsCenters godoc
+//
+//	@Summary		Get all sports centers
+//	@Description	getting latest sports centers data
+//	@Tags			Sports centers
+//	@Produce		json
+//	@Success		200	{object}	sportsCentersOutDto
+//	@Failure		403
+//	@Failure		500
+//	@Security		BearerAuth
+//	@Router			/sports_centers [get]
 func (dh *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
 	sportsCenters, err := dh.SportsCenterRepo.FindAll()
 	if err != nil {
@@ -39,11 +50,24 @@ type detailsUrlOutDto struct {
 	Url string `json:"url"`
 }
 
+// GetDetailsUrl godoc
+//
+//	@Summary		Get details url
+//	@Description	Get the details url for specified sports center
+//	@Tags			Sports centers
+//	@Produce		json
+//	@Param			id	path		string	true	"Sports center ID"
+//	@Success		200	{object}	detailsUrlOutDto
+//	@Failure		404
+//	@Failure		403
+//	@Failure		500
+//	@Security		BearerAuth
+//	@Router			/sports_centers/{id}/details_url [get]
 func (dh *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		log.Println(err.Error())
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 	url, err := dh.SportsCenterRepo.FindDetailsUrlById(uint(id))

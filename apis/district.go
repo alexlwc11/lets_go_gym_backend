@@ -21,6 +21,17 @@ type districtsOutDto struct {
 	Districts []models.District `json:"districts"`
 }
 
+// GetAllDistricts godoc
+//
+//	@Summary		Get all districts
+//	@Description	Get latest districts data
+//	@Tags			Districts
+//	@Produce		json
+//	@Success		200	{object}	districtsOutDto
+//	@Failure		403
+//	@Failure		500
+//	@Security		BearerAuth
+//	@Router			/districts [get]
 func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {
 	districts, err := dh.DistrictRepo.FindAll()
 	if err != nil {

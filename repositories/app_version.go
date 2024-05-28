@@ -6,21 +6,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type AppVersionRepository struct {
+type AppVersionRepository interface {
+	FindAppVersion() (*models.AppVersion, error)
+}
+
+type AppVersionRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewAppVersionRepository(db *gorm.DB) *AppVersionRepository {
-	return &AppVersionRepository{DB: db}
+func NewAppVersionRepositoryImpl(db *gorm.DB) AppVersionRepository {
+	return &AppVersionRepositoryImpl{DB: db}
 }
 
-func (avr *AppVersionRepository) FindAppVersion() (models.AppVersion, error) {
+func (avr *AppVersionRepositoryImpl) FindAppVersion() (*models.AppVersion, error) {
 	var appVersion models.AppVersion
 	result := avr.DB.First(&appVersion)
 
 	if result.Error != nil {
-		return models.AppVersion{}, result.Error
+		return &models.AppVersion{}, result.Error
 	}
 
-	return appVersion, nil
+	return &appVersion, nil
 }

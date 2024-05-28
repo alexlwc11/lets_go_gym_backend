@@ -6,21 +6,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type DistrictRepository struct {
+type DistrictRepository interface {
+	FindAll() (*[]models.District, error)
+}
+
+type DistrictRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewDistrictRepository(db *gorm.DB) *DistrictRepository {
-	return &DistrictRepository{DB: db}
+func NewDistrictRepositoryImpl(db *gorm.DB) DistrictRepository {
+	return &DistrictRepositoryImpl{DB: db}
 }
 
-func (dr *DistrictRepository) FindAll() ([]models.District, error) {
+func (dr *DistrictRepositoryImpl) FindAll() (*[]models.District, error) {
 	var districts []models.District
 	result := dr.DB.Find(&districts)
 
 	if result.Error != nil {
-		return []models.District{}, result.Error
+		return &[]models.District{}, result.Error
 	}
 
-	return districts, nil
+	return &districts, nil
 }

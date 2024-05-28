@@ -10,11 +10,15 @@ import (
 )
 
 type RegionHandler struct {
-	RegionRepo *repositories.RegionRepository
+	RegionRepo repositories.RegionRepository
 }
 
-func NewRegionHandler(regionRepo *repositories.RegionRepository) *RegionHandler {
+func NewRegionHandler(regionRepo repositories.RegionRepository) *RegionHandler {
 	return &RegionHandler{RegionRepo: regionRepo}
+}
+
+func (rh *RegionHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("", rh.GetAllRegions)
 }
 
 type regionsOutDto struct {
@@ -41,6 +45,6 @@ func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, regionsOutDto{
-		Region: regions,
+		Region: *regions,
 	})
 }

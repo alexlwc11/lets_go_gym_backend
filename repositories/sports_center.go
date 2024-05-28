@@ -7,41 +7,47 @@ import (
 	"gorm.io/gorm"
 )
 
-type SportsCenterRepository struct {
+type SportsCenterRepository interface {
+	FindAll() (*[]models.SportsCenter, error)
+	FindById(id uint) (*models.SportsCenter, error)
+	FindDetailsUrlById(id uint) (string, error)
+}
+
+type SportsCenterRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewSportsCenterRepository(db *gorm.DB) *SportsCenterRepository {
-	return &SportsCenterRepository{DB: db}
+func NewSportsCenterRepositoryImpl(db *gorm.DB) SportsCenterRepository {
+	return &SportsCenterRepositoryImpl{DB: db}
 }
 
 const (
 	detailsUrl = "https://www.lcsd.gov.hk/clpss/tc/webApp/FitnessRoomDetails.do?id=%d"
 )
 
-func (dr *SportsCenterRepository) FindAll() ([]models.SportsCenter, error) {
+func (dr *SportsCenterRepositoryImpl) FindAll() (*[]models.SportsCenter, error) {
 	var sportsCenters []models.SportsCenter
 	result := dr.DB.Find(&sportsCenters)
 
 	if result.Error != nil {
-		return []models.SportsCenter{}, result.Error
+		return &[]models.SportsCenter{}, result.Error
 	}
 
-	return sportsCenters, nil
+	return &sportsCenters, nil
 }
 
-func (dr *SportsCenterRepository) FindById(id uint) (models.SportsCenter, error) {
+func (dr *SportsCenterRepositoryImpl) FindById(id uint) (*models.SportsCenter, error) {
 	var sportsCenter models.SportsCenter
 	result := dr.DB.Where("id = ?", id).Take(&sportsCenter)
 
 	if result.Error != nil {
-		return models.SportsCenter{}, result.Error
+		return &models.SportsCenter{}, result.Error
 	}
 
-	return sportsCenter, nil
+	return &sportsCenter, nil
 }
 
-func (dr *SportsCenterRepository) FindDetailsUrlById(id uint) (string, error) {
+func (dr *SportsCenterRepositoryImpl) FindDetailsUrlById(id uint) (string, error) {
 	var sportsCenter models.SportsCenter
 	result := dr.DB.Where("id = ?", id).Take(&sportsCenter)
 

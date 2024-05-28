@@ -9,12 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type RefreshTokenRepository struct {
+type RefreshTokenRepository interface {
+	CreateWithUserId(userId uint) (*models.RefreshToken, error)
+	FindByValue(value string) (*models.RefreshToken, error)
+}
+
+type RefreshTokenRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func NewRefreshTokenRepository(db *gorm.DB) *RefreshTokenRepository {
-	return &RefreshTokenRepository{DB: db}
+func NewRefreshTokenRepositoryImpl(db *gorm.DB) RefreshTokenRepository {
+	return &RefreshTokenRepositoryImpl{DB: db}
 }
 
 // TODO move to env variable
@@ -22,12 +27,12 @@ const (
 	refreshTokenValidTime = 90 * 24 * time.Hour
 )
 
-func (rtr *RefreshTokenRepository) CreateWithUserId(userId uint) (models.RefreshToken, error) {
+func (rtr *RefreshTokenRepositoryImpl) CreateWithUserId(userId uint) (*models.RefreshToken, error) {
 	var expiredDuration = time.Now().Add(refreshTokenValidTime)
 
 	hashedValue, err := bcrypt.GenerateFromPassword([]byte(uuid.NewString()), 4)
 	if err != nil {
-		return models.RefreshToken{}, err
+		return &models.RefreshToken{}, err
 	}
 
 	tokenValue := string(hashedValue)
@@ -41,18 +46,18 @@ func (rtr *RefreshTokenRepository) CreateWithUserId(userId uint) (models.Refresh
 
 	error := rtr.DB.Create(&token).Error
 	if error != nil {
-		return models.RefreshToken{}, error
+		return &models.RefreshToken{}, error
 	}
 
-	return token, nil
+	return &token, nil
 }
 
-func (rtr *RefreshTokenRepository) FindByValue(value string) (models.RefreshToken, error) {
+func (rtr *RefreshTokenRepositoryImpl) FindByValue(value string) (*models.RefreshToken, error) {
 	var token models.RefreshToken
 	err := rtr.DB.Where("value = ?", value).First(&token).Error
 	if err != nil {
-		return models.RefreshToken{}, err
+		return &models.RefreshToken{}, err
 	}
 
-	return token, nil
+	return &token, nil
 }

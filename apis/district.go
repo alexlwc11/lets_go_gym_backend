@@ -10,11 +10,15 @@ import (
 )
 
 type DistrictHandler struct {
-	DistrictRepo *repositories.DistrictRepository
+	DistrictRepo repositories.DistrictRepository
 }
 
-func NewDistrictRepository(districtRepo *repositories.DistrictRepository) *DistrictHandler {
+func NewDistrictHandler(districtRepo repositories.DistrictRepository) *DistrictHandler {
 	return &DistrictHandler{DistrictRepo: districtRepo}
+}
+
+func (dh *DistrictHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("", dh.GetAllDistricts)
 }
 
 type districtsOutDto struct {
@@ -41,6 +45,6 @@ func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, districtsOutDto{
-		Districts: districts,
+		Districts: *districts,
 	})
 }

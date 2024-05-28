@@ -10,10 +10,10 @@ import (
 )
 
 type RegionHandler struct {
-	RegionRepo *repositories.RegionRepository
+	RegionRepo repositories.RegionRepository
 }
 
-func NewRegionHandler(regionRepo *repositories.RegionRepository) *RegionHandler {
+func NewRegionHandler(regionRepo repositories.RegionRepository) *RegionHandler {
 	return &RegionHandler{RegionRepo: regionRepo}
 }
 
@@ -45,6 +45,6 @@ func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, regionsOutDto{
-		Region: regions,
+		Region: *regions,
 	})
 }

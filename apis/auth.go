@@ -12,15 +12,15 @@ import (
 )
 
 type AuthHandler struct {
-	UserRepository         *repositories.UserRepository
-	SessionTokenRepository *repositories.SessionTokenRepository
-	RefreshTokenRepository *repositories.RefreshTokenRepository
+	UserRepository         repositories.UserRepository
+	SessionTokenRepository repositories.SessionTokenRepository
+	RefreshTokenRepository repositories.RefreshTokenRepository
 }
 
 func NewAuthHandler(
-	userRepo *repositories.UserRepository,
-	sessionTokenRepo *repositories.SessionTokenRepository,
-	refreshTokenRepo *repositories.RefreshTokenRepository,
+	userRepo repositories.UserRepository,
+	sessionTokenRepo repositories.SessionTokenRepository,
+	refreshTokenRepo repositories.RefreshTokenRepository,
 ) *AuthHandler {
 	return &AuthHandler{
 		UserRepository:         userRepo,

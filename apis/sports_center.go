@@ -11,10 +11,10 @@ import (
 )
 
 type SportsCenterHandler struct {
-	SportsCenterRepo *repositories.SportsCenterRepository
+	SportsCenterRepo repositories.SportsCenterRepository
 }
 
-func NewSportsCenterHandler(SportsCenterRepo *repositories.SportsCenterRepository) *SportsCenterHandler {
+func NewSportsCenterHandler(SportsCenterRepo repositories.SportsCenterRepository) *SportsCenterHandler {
 	return &SportsCenterHandler{SportsCenterRepo: SportsCenterRepo}
 }
 
@@ -47,7 +47,7 @@ func (sch *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, sportsCentersOutDto{
-		SportsCenters: sportsCenters,
+		SportsCenters: *sportsCenters,
 	})
 }
 

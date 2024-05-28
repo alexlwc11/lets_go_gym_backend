@@ -2,6 +2,7 @@ package configs
 
 import (
 	"bytes"
+	"log"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -22,10 +23,10 @@ type Config struct {
 	} `yaml:"database"`
 }
 
-func InitConfig() (*Config, error) {
+func LoadConfig() Config {
 	f, err := os.Open("configs/private_config.yaml")
 	if err != nil {
-		return nil, err
+		log.Fatal("Failed to load database config")
 	}
 
 	defer f.Close()
@@ -33,10 +34,10 @@ func InitConfig() (*Config, error) {
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(&cfg)
 	if err != nil {
-		return nil, err
+		log.Fatal("Failed to decode database config")
 	}
 
-	return &cfg, nil
+	return cfg
 }
 
 // referencing the Config.FormatDSN() method in [github.com/go-sql-driver/mysql]
@@ -81,7 +82,7 @@ func (cfg *Config) GetDSNString() string {
 		writeDSNParam(&buf, &hasParam, "loc", dbCfg.Loc)
 	}
 
-	if dbCfg.ParseTime == true {
+	if dbCfg.ParseTime {
 		writeDSNParam(&buf, &hasParam, "parseTime", "true")
 	}
 

@@ -10,12 +10,19 @@ import (
 )
 
 type AppInfoHandler struct {
-	AppVersionRepo *repositories.AppVersionRepository
-	DataInfoRepo   *repositories.DataInfoRepository
+	AppVersionRepo repositories.AppVersionRepository
+	DataInfoRepo   repositories.DataInfoRepository
 }
 
-func NewAppInfoHandler(appVersionRepo *repositories.AppVersionRepository, dataInfoRepo *repositories.DataInfoRepository) *AppInfoHandler {
+func NewAppInfoHandler(
+	appVersionRepo repositories.AppVersionRepository,
+	dataInfoRepo repositories.DataInfoRepository,
+) *AppInfoHandler {
 	return &AppInfoHandler{AppVersionRepo: appVersionRepo, DataInfoRepo: dataInfoRepo}
+}
+
+func (aih *AppInfoHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("/app_info", aih.GetAppInfo)
 }
 
 // GetAppInfo godoc
@@ -42,7 +49,7 @@ func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.AppInfo{
-		AppVersion: appVersion,
-		DataInfo:   dataInfo,
+		AppVersion: *appVersion,
+		DataInfo:   *dataInfo,
 	})
 }

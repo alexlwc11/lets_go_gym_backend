@@ -12,21 +12,27 @@ import (
 )
 
 type AuthHandler struct {
-	UserRepository         *repositories.UserRepository
-	SessionTokenRepository *repositories.SessionTokenRepository
-	RefreshTokenRepository *repositories.RefreshTokenRepository
+	UserRepository         repositories.UserRepository
+	SessionTokenRepository repositories.SessionTokenRepository
+	RefreshTokenRepository repositories.RefreshTokenRepository
 }
 
 func NewAuthHandler(
-	userRepo *repositories.UserRepository,
-	sessionTokenRepo *repositories.SessionTokenRepository,
-	refreshTokenRepo *repositories.RefreshTokenRepository,
+	userRepo repositories.UserRepository,
+	sessionTokenRepo repositories.SessionTokenRepository,
+	refreshTokenRepo repositories.RefreshTokenRepository,
 ) *AuthHandler {
 	return &AuthHandler{
 		UserRepository:         userRepo,
 		SessionTokenRepository: sessionTokenRepo,
 		RefreshTokenRepository: refreshTokenRepo,
 	}
+}
+
+func (ah *AuthHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.POST("/register", ah.Register)
+	engine.POST("/sign_in", ah.SignIn)
+	engine.POST("/refresh", ah.Refresh)
 }
 
 // InDto for [Register] and [SignIn]

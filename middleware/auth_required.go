@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TokenProviderFunc func(tokenValue string) (models.SessionToken, error)
+type TokenProviderFunc func(tokenValue string) (*models.SessionToken, error)
 
 func AuthRequired(tokenProvider TokenProviderFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -30,7 +30,7 @@ func AuthRequired(tokenProvider TokenProviderFunc) gin.HandlerFunc {
 			return
 		}
 
-		if err := isTokenExpired(token); err != nil {
+		if err := isTokenExpired(*token); err != nil {
 			log.Println(errors.New("invalid token"))
 			c.AbortWithStatus(http.StatusForbidden)
 			return

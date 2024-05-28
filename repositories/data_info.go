@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"lets_go_gym_backend/models"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -22,12 +23,13 @@ func (dir *DataInfoRepositoryImpl) FindDataInfo() (*models.DataInfo, error) {
 	var dataInfo models.DataInfo
 	result := dir.DB.Take(&dataInfo)
 	if result.RowsAffected == 0 {
+		log.Println("No data info record found")
 		newDataInfo, err := dir.createDataInfoRecord()
 		if err != nil {
 			return &models.DataInfo{}, err
-		} else {
-			dataInfo = *newDataInfo
 		}
+
+		dataInfo = *newDataInfo
 	}
 
 	return &dataInfo, nil
@@ -37,19 +39,19 @@ func (dir *DataInfoRepositoryImpl) createDataInfoRecord() (*models.DataInfo, err
 	var latestUpdatedRegion models.Region
 	regionResult := dir.DB.Order("updated_at desc").Take(&latestUpdatedRegion)
 	if regionResult.Error != nil {
-		println("Failed to get latest updated region")
+		log.Println("Failed to get latest updated region")
 		return &models.DataInfo{}, regionResult.Error
 	}
 	var latestUpdatedDistrict models.District
 	districtResult := dir.DB.Order("updated_at desc").Take(&latestUpdatedDistrict)
 	if districtResult.Error != nil {
-		println("Failed to get latest updated district")
+		log.Println("Failed to get latest updated district")
 		return &models.DataInfo{}, districtResult.Error
 	}
 	var latestUpdatedSportsCenter models.SportsCenter
 	sportsCenterResult := dir.DB.Order("updated_at desc").Take(&latestUpdatedSportsCenter)
 	if sportsCenterResult.Error != nil {
-		println("Failed to get latest updated sports center")
+		log.Println("Failed to get latest updated sports center")
 		return &models.DataInfo{}, sportsCenterResult.Error
 	}
 

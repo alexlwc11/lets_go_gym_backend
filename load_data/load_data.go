@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"lets_go_gym_backend/models"
+	"log"
 	"os"
 )
 
@@ -47,7 +48,7 @@ func loadDataFromJson[V Regions | Districts | SportsCenters](path string) (*V, e
 	jsonFile, err := os.Open(path)
 
 	if err != nil {
-		println(err.Error())
+		log.Println(err.Error())
 		return nil, err
 	}
 	defer jsonFile.Close()

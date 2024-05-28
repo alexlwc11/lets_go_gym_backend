@@ -18,6 +18,10 @@ func NewAppInfoHandler(appVersionRepo *repositories.AppVersionRepository, dataIn
 	return &AppInfoHandler{AppVersionRepo: appVersionRepo, DataInfoRepo: dataInfoRepo}
 }
 
+func (aih *AppInfoHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("/app_info", aih.GetAppInfo)
+}
+
 // GetAppInfo godoc
 //
 //	@Summary		Get app info

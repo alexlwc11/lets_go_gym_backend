@@ -17,6 +17,10 @@ func NewRegionHandler(regionRepo *repositories.RegionRepository) *RegionHandler 
 	return &RegionHandler{RegionRepo: regionRepo}
 }
 
+func (rh *RegionHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("", rh.GetAllRegions)
+}
+
 type regionsOutDto struct {
 	Region []models.Region `json:"regions"`
 }

@@ -14,8 +14,13 @@ type SportsCenterHandler struct {
 	SportsCenterRepo *repositories.SportsCenterRepository
 }
 
-func NewSportsCenterRepository(SportsCenterRepo *repositories.SportsCenterRepository) *SportsCenterHandler {
+func NewSportsCenterHandler(SportsCenterRepo *repositories.SportsCenterRepository) *SportsCenterHandler {
 	return &SportsCenterHandler{SportsCenterRepo: SportsCenterRepo}
+}
+
+func (sch *SportsCenterHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.GET("", sch.GetAllSportsCenters)
+	engine.GET("/:id/details_url", sch.GetDetailsUrl)
 }
 
 type sportsCentersOutDto struct {
@@ -33,8 +38,8 @@ type sportsCentersOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/sports_centers [get]
-func (dh *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
-	sportsCenters, err := dh.SportsCenterRepo.FindAll()
+func (sch *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
+	sportsCenters, err := sch.SportsCenterRepo.FindAll()
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -63,14 +68,14 @@ type detailsUrlOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/sports_centers/{id}/details_url [get]
-func (dh *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
+func (sch *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
-	url, err := dh.SportsCenterRepo.FindDetailsUrlById(uint(id))
+	url, err := sch.SportsCenterRepo.FindDetailsUrlById(uint(id))
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)

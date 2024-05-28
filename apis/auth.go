@@ -29,6 +29,12 @@ func NewAuthHandler(
 	}
 }
 
+func (ah *AuthHandler) RegisterRoutes(engine *gin.RouterGroup) {
+	engine.POST("/register", ah.Register)
+	engine.POST("/sign_in", ah.SignIn)
+	engine.POST("/refresh", ah.Refresh)
+}
+
 // InDto for [Register] and [SignIn]
 // TODO support other sign up methods e.g. email & password
 type userInfoInDto struct {

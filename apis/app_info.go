@@ -37,13 +37,13 @@ func (aih *AppInfoHandler) RegisterRoutes(engine *gin.RouterGroup) {
 func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
 	appVersion, err := aih.AppVersionRepo.FindAppVersion()
 	if err != nil {
-		log.Println(err.Error())
+		log.Printf("Failed to find app version: %s\n", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 	dataInfo, err := aih.DataInfoRepo.FindDataInfo()
 	if err != nil {
-		log.Println(err.Error())
+		log.Printf("Failed to find data info: %s\n", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}

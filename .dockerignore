@@ -1,0 +1,12 @@
+# .dockerignore
+
+# do not copy these files to the work dir
+*_test/
+
+.idea/
+.vscode/
+.gitignore
+Dockerfile
+.dockerignore
+LICENSE
+README.md

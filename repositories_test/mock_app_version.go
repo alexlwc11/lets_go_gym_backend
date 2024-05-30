@@ -1,4 +1,4 @@
-package app_info_test
+package repositories_test
 
 import (
 	"lets_go_gym_backend/models"

@@ -13,7 +13,7 @@ import (
 )
 
 func TestAppInfo(t *testing.T) {
-	t.Run("TestAppInfo_GetAppInfoSuccess", func(t *testing.T) {
+	t.Run("GetAppInfo_Success", func(t *testing.T) {
 		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
 		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
 		appInfoHandler := apis.NewAppInfoHandler(
@@ -63,7 +63,7 @@ func TestAppInfo(t *testing.T) {
 		}
 	})
 
-	t.Run("TestAppInfo_GetAppInfoFailWithAppVersionFailureResult", func(t *testing.T) {
+	t.Run("GetAppInfo_FailWithAppVersionFailureResult", func(t *testing.T) {
 		mockAppVersionRepoWithFailureResult := MockRepo.NewMockAppVersionRepositoryWithFailureResult()
 		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
 		appInfoHandler := apis.NewAppInfoHandler(
@@ -87,7 +87,7 @@ func TestAppInfo(t *testing.T) {
 		}
 	})
 
-	t.Run("TestAppInfo_GetAppInfoFailWithDataInfoFailureResult", func(t *testing.T) {
+	t.Run("GetAppInfo_FailWithDataInfoFailureResult", func(t *testing.T) {
 		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
 		mockDataInfoRepoWithFailureResult := MockRepo.NewMockDataInfoRepositoryWithFailureResult()
 		appInfoHandler := apis.NewAppInfoHandler(

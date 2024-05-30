@@ -1,4 +1,4 @@
-package app_info_test
+package api_test
 
 import (
 	"encoding/json"
@@ -9,12 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"lets_go_gym_backend/apis"
+	MockRepo "lets_go_gym_backend/repositories_test"
 )
 
-func TestGetAppInfo(t *testing.T) {
-	t.Run("GetAppInfoSuccess", func(t *testing.T) {
-		mockAppVersionRepoWithSuccessResult := NewMockAppVersionRepositoryWithSuccessResult()
-		mockDataInfoRepoWithSuccessResult := NewMockDataInfoRepositoryWithSuccessResult()
+func TestAppInfo(t *testing.T) {
+	t.Run("TestAppInfo_GetAppInfoSuccess", func(t *testing.T) {
+		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
+		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithSuccessResult)
 
@@ -62,9 +63,9 @@ func TestGetAppInfo(t *testing.T) {
 		}
 	})
 
-	t.Run("GetAppInfoFailWithAppVersionFailureResult", func(t *testing.T) {
-		mockAppVersionRepoWithFailureResult := NewMockAppVersionRepositoryWithFailureResult()
-		mockDataInfoRepoWithSuccessResult := NewMockDataInfoRepositoryWithSuccessResult()
+	t.Run("TestAppInfo_GetAppInfoFailWithAppVersionFailureResult", func(t *testing.T) {
+		mockAppVersionRepoWithFailureResult := MockRepo.NewMockAppVersionRepositoryWithFailureResult()
+		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithFailureResult, mockDataInfoRepoWithSuccessResult)
 
@@ -86,9 +87,9 @@ func TestGetAppInfo(t *testing.T) {
 		}
 	})
 
-	t.Run("GetAppInfoFailWithDataInfoFailureResult", func(t *testing.T) {
-		mockAppVersionRepoWithSuccessResult := NewMockAppVersionRepositoryWithSuccessResult()
-		mockDataInfoRepoWithFailureResult := NewMockDataInfoRepositoryWithFailureResult()
+	t.Run("TestAppInfo_GetAppInfoFailWithDataInfoFailureResult", func(t *testing.T) {
+		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
+		mockDataInfoRepoWithFailureResult := MockRepo.NewMockDataInfoRepositoryWithFailureResult()
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithFailureResult)
 

@@ -1,15 +1,13 @@
-package api_test
+package apis_test
 
 import (
 	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"testing"
-
-	"github.com/gin-gonic/gin"
 
 	"lets_go_gym_backend/apis"
 	MockRepo "lets_go_gym_backend/repositories_test"
+	RequestHelper "lets_go_gym_backend/test"
 )
 
 func TestAppInfo(t *testing.T) {
@@ -19,22 +17,14 @@ func TestAppInfo(t *testing.T) {
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithSuccessResult)
 
-		req := httptest.NewRequest(http.MethodGet, "/app_info", nil)
-		rr := httptest.NewRecorder()
-		router := gin.Default()
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
 
-		appInfoHandler.RegisterRoutes(&router.RouterGroup)
-
-		router.ServeHTTP(rr, req)
-
-		if rr.Code != http.StatusOK {
-			t.Errorf("expected %d but received %d", http.StatusOK, rr.Code)
+		if statusCode != http.StatusOK {
+			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
 		}
 
-		body := rr.Body.Bytes()
-
 		var data map[string]interface{}
-		err := json.Unmarshal(body, &data)
+		err := json.Unmarshal(responseBody, &data)
 		if err != nil {
 			t.Error(err)
 			return
@@ -69,20 +59,13 @@ func TestAppInfo(t *testing.T) {
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithFailureResult, mockDataInfoRepoWithSuccessResult)
 
-		req := httptest.NewRequest(http.MethodGet, "/app_info", nil)
-		rr := httptest.NewRecorder()
-		router := gin.Default()
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
 
-		appInfoHandler.RegisterRoutes(&router.RouterGroup)
-
-		router.ServeHTTP(rr, req)
-
-		if rr.Code != http.StatusInternalServerError {
-			t.Errorf("expected %d but received %d", http.StatusInternalServerError, rr.Code)
+		if statusCode != http.StatusInternalServerError {
+			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
 		}
 
-		body := rr.Body.Bytes()
-		if body != nil {
+		if responseBody != nil {
 			t.Error("expected empty body but received non null value")
 		}
 	})
@@ -93,20 +76,13 @@ func TestAppInfo(t *testing.T) {
 		appInfoHandler := apis.NewAppInfoHandler(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithFailureResult)
 
-		req := httptest.NewRequest(http.MethodGet, "/app_info", nil)
-		rr := httptest.NewRecorder()
-		router := gin.Default()
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
 
-		appInfoHandler.RegisterRoutes(&router.RouterGroup)
-
-		router.ServeHTTP(rr, req)
-
-		if rr.Code != http.StatusInternalServerError {
-			t.Errorf("expected %d but received %d", http.StatusInternalServerError, rr.Code)
+		if statusCode != http.StatusInternalServerError {
+			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
 		}
 
-		body := rr.Body.Bytes()
-		if body != nil {
+		if responseBody != nil {
 			t.Error("expected empty body but received non null value")
 		}
 	})

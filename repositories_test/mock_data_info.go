@@ -23,7 +23,7 @@ func (m *MockDataInfoRepositoryWithSuccessResult) FindDataInfo() (*models.DataIn
 	}, nil
 }
 
-// Mock repo with success result
+// Mock repo with failure result
 type MockDataInfoRepositoryWithFailureResult struct{}
 
 func NewMockDataInfoRepositoryWithFailureResult() repositories.DataInfoRepository {

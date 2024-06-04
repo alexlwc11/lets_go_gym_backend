@@ -31,5 +31,3 @@ COPY --from=build-stage /lets-go-gym-backend /lets-go-gym-backend
 EXPOSE 8080
 
 CMD [ "/lets-go-gym-backend" ]
-
-# TODO fix the path issue of the private_config.yaml

@@ -33,7 +33,7 @@ go.work
 .idea/
 
 # files contain credentials
-configs/private_config.yaml
+config_files/
 
 # files contain data
 data/

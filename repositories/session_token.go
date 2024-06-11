@@ -28,7 +28,7 @@ const (
 )
 
 func (str *SessionTokenRepositoryImpl) CreateWithUserId(userId uint) (*models.SessionToken, error) {
-	var expiredDuration = time.Now().Add(sessionTokenValidTime)
+	expiredDuration := time.Now().Add(sessionTokenValidTime)
 
 	hashedValue, err := bcrypt.GenerateFromPassword([]byte(uuid.NewString()), 4)
 	if err != nil {

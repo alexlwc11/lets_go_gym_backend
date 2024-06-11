@@ -11,6 +11,7 @@ require (
 	github.com/swaggo/swag v1.16.3
 	golang.org/x/crypto v0.23.0
 	gopkg.in/yaml.v3 v3.0.1
+	gorm.io/datatypes v1.2.0
 	gorm.io/gorm v1.25.5
 )
 

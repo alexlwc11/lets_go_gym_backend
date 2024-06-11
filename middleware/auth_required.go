@@ -36,6 +36,7 @@ func AuthRequired(tokenProvider TokenProviderFunc) gin.HandlerFunc {
 			return
 		}
 
+		c.Set("UserID", token.UserID)
 		c.Next()
 	}
 }

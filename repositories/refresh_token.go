@@ -28,7 +28,7 @@ const (
 )
 
 func (rtr *RefreshTokenRepositoryImpl) CreateWithUserId(userId uint) (*models.RefreshToken, error) {
-	var expiredDuration = time.Now().Add(refreshTokenValidTime)
+	expiredDuration := time.Now().Add(refreshTokenValidTime)
 
 	hashedValue, err := bcrypt.GenerateFromPassword([]byte(uuid.NewString()), 4)
 	if err != nil {

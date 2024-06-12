@@ -1,11 +1,10 @@
 package repositories
 
 import (
-	models "lets_go_gym_backend/models"
+	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/utils"
 	"time"
 
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -30,12 +29,11 @@ const (
 func (rtr *RefreshTokenRepositoryImpl) CreateWithUserId(userId uint) (*models.RefreshToken, error) {
 	expiredDuration := time.Now().Add(refreshTokenValidTime)
 
-	hashedValue, err := bcrypt.GenerateFromPassword([]byte(uuid.NewString()), 4)
+	tokenValue, err := utils.GenerateToken()
 	if err != nil {
 		return &models.RefreshToken{}, err
 	}
 
-	tokenValue := string(hashedValue)
 	token := models.RefreshToken{
 		Token: models.Token{
 			UserID:    userId,

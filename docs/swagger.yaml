@@ -42,6 +42,20 @@ definitions:
           $ref: '#/definitions/models.SportsCenter'
         type: array
     type: object
+  apis.updateUserBookmarksInDto:
+    properties:
+      updated_sports_center_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  apis.userBookmarkOutDto:
+    properties:
+      sports_center_ids:
+        items:
+          type: integer
+        type: array
+    type: object
   apis.userInfoInDto:
     properties:
       device_uuid:
@@ -146,6 +160,48 @@ paths:
       summary: Get app info
       tags:
       - AppInfo
+  /bookmarks:
+    get:
+      description: Get user bookmarked sports centers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apis.userBookmarkOutDto'
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: GetUserBookmarks
+      tags:
+      - Bookmarks
+    put:
+      description: Update user bookmarked sports centers
+      parameters:
+      - description: Updated sports centers IDs
+        in: body
+        name: userUpdatedSportsCenterIds
+        required: true
+        schema:
+          $ref: '#/definitions/apis.updateUserBookmarksInDto'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: UpdateUserBookmarks
+      tags:
+      - Bookmarks
   /districts:
     get:
       description: Get latest districts data

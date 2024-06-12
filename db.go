@@ -72,6 +72,10 @@ func proceedSchemaMigration(db *gorm.DB) error {
 		return err
 	}
 
+	if err := db.AutoMigrate(&models.UserBookmark{}); err != nil {
+		return err
+	}
+
 	return nil
 }
 

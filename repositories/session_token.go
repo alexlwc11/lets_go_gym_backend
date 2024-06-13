@@ -1,11 +1,10 @@
 package repositories
 
 import (
-	models "lets_go_gym_backend/models"
+	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/utils"
 	"time"
 
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -28,14 +27,13 @@ const (
 )
 
 func (str *SessionTokenRepositoryImpl) CreateWithUserId(userId uint) (*models.SessionToken, error) {
-	var expiredDuration = time.Now().Add(sessionTokenValidTime)
+	expiredDuration := time.Now().Add(sessionTokenValidTime)
 
-	hashedValue, err := bcrypt.GenerateFromPassword([]byte(uuid.NewString()), 4)
+	tokenValue, err := utils.GenerateToken()
 	if err != nil {
 		return &models.SessionToken{}, err
 	}
 
-	tokenValue := string(hashedValue)
 	token := models.SessionToken{
 		Token: models.Token{
 			UserID:    userId,

@@ -24,7 +24,7 @@ type Config struct {
 }
 
 func LoadConfig() Config {
-	f, err := os.Open("configs/private_config.yaml")
+	f, err := os.Open("config_files/api/private_config.yaml")
 	if err != nil {
 		log.Fatal("Failed to load database config")
 	}

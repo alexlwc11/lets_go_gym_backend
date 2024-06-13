@@ -49,6 +49,10 @@ func (server *APIServer) Init() {
 	sportsCenterRepo := repositories.NewSportsCenterRepositoryImpl(server.db)
 	sportsCenterHandler := apis.NewSportsCenterHandler(sportsCenterRepo)
 
+	// bookmark
+	userBookmarkRepo := repositories.NewUserBookmarkRepositoryImpl(server.db)
+	userBookmarkHandler := apis.NewUserBookmarkHandler(userBookmarkRepo)
+
 	// app info
 	appVersionRepo := repositories.NewAppVersionRepositoryImpl(server.db)
 	dataInfoRepo := repositories.NewDataInfoRepositoryImpl(server.db)
@@ -79,6 +83,10 @@ func (server *APIServer) Init() {
 		// sports center
 		sportsCenters := v1.Group("/sports_centers")
 		sportsCenterHandler.RegisterRoutes(sportsCenters)
+
+		// bookmark
+		bookmarks := v1.Group("/bookmarks")
+		userBookmarkHandler.RegisterRoutes(bookmarks)
 	}
 
 	server.engine = router

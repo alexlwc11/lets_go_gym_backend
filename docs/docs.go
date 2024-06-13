@@ -46,6 +46,74 @@ const docTemplate = `{
                 }
             }
         },
+        "/bookmarks": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get user bookmarked sports centers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "GetUserBookmarks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/apis.userBookmarkOutDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update user bookmarked sports centers",
+                "tags": [
+                    "Bookmarks"
+                ],
+                "summary": "PutUserBookmarks",
+                "parameters": [
+                    {
+                        "description": "Updated sports centers IDs",
+                        "name": "userUpdatedSportsCenterIds",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apis.putUserBookmarksInDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/districts": {
             "get": {
                 "security": [
@@ -314,6 +382,17 @@ const docTemplate = `{
                 }
             }
         },
+        "apis.putUserBookmarksInDto": {
+            "type": "object",
+            "properties": {
+                "updated_sports_center_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "apis.refreshInDto": {
             "type": "object",
             "properties": {
@@ -357,6 +436,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.SportsCenter"
+                    }
+                }
+            }
+        },
+        "apis.userBookmarkOutDto": {
+            "type": "object",
+            "properties": {
+                "sports_center_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
                     }
                 }
             }

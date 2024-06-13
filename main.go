@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// init router
-	router := NewAPIServer("localhost:8080", db)
+	router := NewAPIServer("0.0.0.0:8080", db)
 	router.Init()
 	router.SetupSwagger()
 	router.Run()

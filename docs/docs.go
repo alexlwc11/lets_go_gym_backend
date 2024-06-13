@@ -86,7 +86,7 @@ const docTemplate = `{
                 "tags": [
                     "Bookmarks"
                 ],
-                "summary": "UpdateUserBookmarks",
+                "summary": "PutUserBookmarks",
                 "parameters": [
                     {
                         "description": "Updated sports centers IDs",
@@ -94,7 +94,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/apis.updateUserBookmarksInDto"
+                            "$ref": "#/definitions/apis.putUserBookmarksInDto"
                         }
                     }
                 ],
@@ -382,6 +382,17 @@ const docTemplate = `{
                 }
             }
         },
+        "apis.putUserBookmarksInDto": {
+            "type": "object",
+            "properties": {
+                "updated_sports_center_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "apis.refreshInDto": {
             "type": "object",
             "properties": {
@@ -425,17 +436,6 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.SportsCenter"
-                    }
-                }
-            }
-        },
-        "apis.updateUserBookmarksInDto": {
-            "type": "object",
-            "properties": {
-                "updated_sports_center_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
                     }
                 }
             }

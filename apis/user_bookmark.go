@@ -19,7 +19,7 @@ func NewUserBookmarkHandler(userBookmarkRepo repositories.UserBookmarkRepository
 
 func (ubh *UserBookmarkHandler) RegisterRoutes(engine *gin.RouterGroup) {
 	engine.GET("", ubh.GetUserBookmarks)
-	engine.PUT("", ubh.UpdateUserBookmarks)
+	engine.PUT("", ubh.PutUserBookmarks)
 }
 
 // OutDto for [GetUserBookmarks]
@@ -39,50 +39,66 @@ type userBookmarkOutDto struct {
 //	@Security		BearerAuth
 //	@Router			/bookmarks [get]
 func (ubh *UserBookmarkHandler) GetUserBookmarks(c *gin.Context) {
-	userBookmark, err := ubh.UserBookmarkRepository.FindByUserId(c.GetUint("UserID"))
-	// cannot find record for
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Println("Cannot find user id")
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	userBookmark, err := ubh.UserBookmarkRepository.FindByUserId(userId.(uint))
+	// cannot find record for the user
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	var sportsCenterIds []uint
-	if jsonErr := json.Unmarshal(userBookmark.SportsCenterIDs, &sportsCenterIds); jsonErr != nil {
-		log.Println(jsonErr.Error())
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
+	var sportsCenterIds = []uint{}
+	if userBookmark.SportsCenterIDs != nil {
+		if jsonErr := json.Unmarshal(userBookmark.SportsCenterIDs, &sportsCenterIds); jsonErr != nil {
+			log.Println(jsonErr.Error())
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, userBookmarkOutDto{SportsCenterIds: sportsCenterIds})
 }
 
 // InDto for [UpdateUserBookmarks]
-type updateUserBookmarksInDto struct {
+type putUserBookmarksInDto struct {
 	UpdatedSportsCenterIds []uint `json:"updated_sports_center_ids"`
 }
 
-// UpdateUserBookmarks godoc
+// PutUserBookmarks godoc
 //
 //	@Summary		UpdateUserBookmarks
 //	@Description	Update user bookmarked sports centers
 //	@Tags			Bookmarks
-//	@Param			userUpdatedSportsCenterIds	body	updateUserBookmarksInDto	true	"Updated sports centers IDs"
+//	@Param			userUpdatedSportsCenterIds	body	putUserBookmarksInDto	true	"Updated sports centers IDs"
 //	@Success		200
 //	@Failure		400
 //	@Failure		403
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/bookmarks [put]
-func (ubh *UserBookmarkHandler) UpdateUserBookmarks(c *gin.Context) {
-	var updateUserBookmarksInDto updateUserBookmarksInDto
-	if err := c.BindJSON(&updateUserBookmarksInDto); err != nil {
+func (ubh *UserBookmarkHandler) PutUserBookmarks(c *gin.Context) {
+	userId, exists := c.Get("user_id")
+	if !exists {
+		log.Println("Cannot find user id")
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	var putUserBookmarksInDto putUserBookmarksInDto
+	if err := c.BindJSON(&putUserBookmarksInDto); err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	err := ubh.UserBookmarkRepository.UpdateWithUserId(c.GetUint("UserID"), updateUserBookmarksInDto.UpdatedSportsCenterIds)
+	err := ubh.UserBookmarkRepository.UpdateWithUserId(userId.(uint), putUserBookmarksInDto.UpdatedSportsCenterIds)
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)

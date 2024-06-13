@@ -86,7 +86,7 @@ const docTemplate = `{
                 "tags": [
                     "Bookmarks"
                 ],
-                "summary": "UpdateUserBookmarks",
+                "summary": "PutUserBookmarks",
                 "parameters": [
                     {
                         "description": "Updated sports centers IDs",

@@ -199,7 +199,7 @@ paths:
           description: Internal Server Error
       security:
       - BearerAuth: []
-      summary: UpdateUserBookmarks
+      summary: PutUserBookmarks
       tags:
       - Bookmarks
   /districts:

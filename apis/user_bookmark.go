@@ -73,7 +73,7 @@ type putUserBookmarksInDto struct {
 
 // PutUserBookmarks godoc
 //
-//	@Summary		UpdateUserBookmarks
+//	@Summary		PutUserBookmarks
 //	@Description	Update user bookmarked sports centers
 //	@Tags			Bookmarks
 //	@Param			userUpdatedSportsCenterIds	body	putUserBookmarksInDto	true	"Updated sports centers IDs"

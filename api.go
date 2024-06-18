@@ -3,13 +3,14 @@ package main
 import (
 	"lets_go_gym_backend/apis"
 	"lets_go_gym_backend/docs"
-	"lets_go_gym_backend/middleware"
 	"lets_go_gym_backend/repositories"
 
 	"github.com/gin-gonic/gin"
 	SwaggerFiles "github.com/swaggo/files"
 	GinSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
+
+	Auth "github.com/alexlwc11/simple_auth_go/cmd"
 )
 
 const (
@@ -32,12 +33,7 @@ func NewAPIServer(addr string, db *gorm.DB) *APIServer {
 // Router
 func (server *APIServer) Init() {
 	// auth
-	sessionTokenRepo := repositories.NewSessionTokenRepositoryImpl(server.db)
-	authHandler := apis.NewAuthHandler(
-		repositories.NewUserRepositoryImpl(server.db),
-		sessionTokenRepo,
-		repositories.NewRefreshTokenRepositoryImpl(server.db),
-	)
+	authHandler := Auth.CreateAuthHandler(server.db)
 
 	// app info
 	appInfoHandler := apis.NewAppInfoHandlerImpl(
@@ -79,7 +75,7 @@ func (server *APIServer) Init() {
 		v1.GET("/app_info", appInfoHandler.GetAppInfo)
 
 		// This middleware applies to the endpoints setup below
-		v1.Use(middleware.AuthRequired(sessionTokenRepo.FindByValue))
+		v1.Use(Auth.AuthRequired(server.db))
 
 		// region
 		regions := v1.Group("/regions")

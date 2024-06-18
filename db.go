@@ -8,6 +8,8 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	Auth "github.com/alexlwc11/simple_auth_go/cmd"
 )
 
 type SQLStorage struct {
@@ -40,15 +42,7 @@ func (storage *SQLStorage) Init() (*gorm.DB, error) {
 }
 
 func proceedSchemaMigration(db *gorm.DB) error {
-	if err := db.AutoMigrate(&models.User{}); err != nil {
-		return err
-	}
-
-	if err := db.AutoMigrate(&models.SessionToken{}); err != nil {
-		return err
-	}
-
-	if err := db.AutoMigrate(&models.RefreshToken{}); err != nil {
+	if err := Auth.ProceedSchemaMigration(db); err != nil {
 		return err
 	}
 

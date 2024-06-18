@@ -9,16 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegionHandler struct {
+type RegionHandler interface {
+	GetAllRegions(c *gin.Context)
+}
+
+type RegionHandlerImpl struct {
 	RegionRepo repositories.RegionRepository
 }
 
-func NewRegionHandler(regionRepo repositories.RegionRepository) *RegionHandler {
-	return &RegionHandler{RegionRepo: regionRepo}
-}
-
-func (rh *RegionHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.GET("", rh.GetAllRegions)
+func NewRegionHandlerImpl(regionRepo repositories.RegionRepository) RegionHandler {
+	return &RegionHandlerImpl{RegionRepo: regionRepo}
 }
 
 type regionsOutDto struct {
@@ -36,7 +36,7 @@ type regionsOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/regions [get]
-func (rh *RegionHandler) GetAllRegions(c *gin.Context) {
+func (rh *RegionHandlerImpl) GetAllRegions(c *gin.Context) {
 	regions, err := rh.RegionRepo.FindAll()
 	if err != nil {
 		log.Println(err.Error())

@@ -11,7 +11,13 @@ import (
 	"github.com/google/uuid"
 )
 
-type AuthHandler struct {
+type AuthHandler interface {
+	Register(c *gin.Context)
+	SignIn(c *gin.Context)
+	Refresh(c *gin.Context)
+}
+
+type AuthHandlerImpl struct {
 	UserRepository         repositories.UserRepository
 	SessionTokenRepository repositories.SessionTokenRepository
 	RefreshTokenRepository repositories.RefreshTokenRepository
@@ -21,18 +27,12 @@ func NewAuthHandler(
 	userRepo repositories.UserRepository,
 	sessionTokenRepo repositories.SessionTokenRepository,
 	refreshTokenRepo repositories.RefreshTokenRepository,
-) *AuthHandler {
-	return &AuthHandler{
+) AuthHandler {
+	return &AuthHandlerImpl{
 		UserRepository:         userRepo,
 		SessionTokenRepository: sessionTokenRepo,
 		RefreshTokenRepository: refreshTokenRepo,
 	}
-}
-
-func (ah *AuthHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.POST("/register", ah.Register)
-	engine.POST("/sign_in", ah.SignIn)
-	engine.POST("/refresh", ah.Refresh)
 }
 
 // InDto for [Register] and [SignIn]
@@ -60,7 +60,7 @@ type sessionTokenOutDto struct {
 //	@Success		200	{object}	sessionTokenOutDto
 //	@Failure		500
 //	@Router			/register [post]
-func (ah *AuthHandler) Register(c *gin.Context) {
+func (ah *AuthHandlerImpl) Register(c *gin.Context) {
 	// Create new user with device UUID
 	var userCred userInfoInDto
 	if err := c.BindJSON(&userCred); err != nil {
@@ -103,7 +103,7 @@ func (ah *AuthHandler) Register(c *gin.Context) {
 //	@Success		200	{object}	sessionTokenOutDto
 //	@Failure		500
 //	@Router			/sign_in [post]
-func (ah *AuthHandler) SignIn(c *gin.Context) {
+func (ah *AuthHandlerImpl) SignIn(c *gin.Context) {
 	var userCred userInfoInDto
 	if err := c.BindJSON(&userCred); err != nil {
 		log.Println(err.Error())
@@ -149,7 +149,7 @@ type refreshInDto struct {
 //	@Success		200	{object}	sessionTokenOutDto
 //	@Failure		500
 //	@Router			/refresh [post]
-func (ah *AuthHandler) Refresh(c *gin.Context) {
+func (ah *AuthHandlerImpl) Refresh(c *gin.Context) {
 	var refreshToken refreshInDto
 	if err := c.BindJSON(&refreshToken); err != nil {
 		log.Println(err.Error())
@@ -179,7 +179,7 @@ func (ah *AuthHandler) Refresh(c *gin.Context) {
 	c.JSON(http.StatusOK, outDto)
 }
 
-func (ah *AuthHandler) generateTokenOutDtoWithUserId(userID uint) (sessionTokenOutDto, error) {
+func (ah *AuthHandlerImpl) generateTokenOutDtoWithUserId(userID uint) (sessionTokenOutDto, error) {
 	// Create session token with user ID
 	sessionToken, err := ah.SessionTokenRepository.CreateWithUserId(userID)
 	if err != nil {

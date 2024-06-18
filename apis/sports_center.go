@@ -2,7 +2,7 @@ package apis
 
 import (
 	"lets_go_gym_backend/models"
-	repositories "lets_go_gym_backend/repositories"
+	"lets_go_gym_backend/repositories"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,17 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type SportsCenterHandler struct {
+type SportsCenterHandler interface {
+	GetAllSportsCenters(c *gin.Context)
+	GetDetailsUrl(c *gin.Context)
+}
+
+type SportsCenterHandlerImpl struct {
 	SportsCenterRepo repositories.SportsCenterRepository
 }
 
-func NewSportsCenterHandler(SportsCenterRepo repositories.SportsCenterRepository) *SportsCenterHandler {
-	return &SportsCenterHandler{SportsCenterRepo: SportsCenterRepo}
-}
-
-func (sch *SportsCenterHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.GET("", sch.GetAllSportsCenters)
-	engine.GET("/:id/details_url", sch.GetDetailsUrl)
+func NewSportsCenterHandlerImpl(SportsCenterRepo repositories.SportsCenterRepository) SportsCenterHandler {
+	return &SportsCenterHandlerImpl{SportsCenterRepo: SportsCenterRepo}
 }
 
 type sportsCentersOutDto struct {
@@ -38,7 +38,7 @@ type sportsCentersOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/sports_centers [get]
-func (sch *SportsCenterHandler) GetAllSportsCenters(c *gin.Context) {
+func (sch *SportsCenterHandlerImpl) GetAllSportsCenters(c *gin.Context) {
 	sportsCenters, err := sch.SportsCenterRepo.FindAll()
 	if err != nil {
 		log.Println(err.Error())
@@ -68,7 +68,7 @@ type detailsUrlOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/sports_centers/{id}/details_url [get]
-func (sch *SportsCenterHandler) GetDetailsUrl(c *gin.Context) {
+func (sch *SportsCenterHandlerImpl) GetDetailsUrl(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		log.Println(err.Error())

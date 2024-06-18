@@ -8,14 +8,20 @@ import (
 	"lets_go_gym_backend/apis"
 	MockRepo "lets_go_gym_backend/repositories_test"
 	RequestHelper "lets_go_gym_backend/test"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestRegions_WithoutAuth(t *testing.T) {
 	t.Run("GetRegions_Success", func(t *testing.T) {
 		mockRegionRepositoryWithSuccessResult := MockRepo.NewMockRegionRepositoryWithSuccessResult()
-		regionHandler := apis.NewRegionHandler(mockRegionRepositoryWithSuccessResult)
+		regionHandler := apis.NewRegionHandlerImpl(mockRegionRepositoryWithSuccessResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, regionHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil, func(rg *gin.RouterGroup) {
+				rg.GET("", regionHandler.GetAllRegions)
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -53,9 +59,13 @@ func TestRegions_WithoutAuth(t *testing.T) {
 
 	t.Run("GetRegions_Failure", func(t *testing.T) {
 		mockRegionRepositoryWithFailureResult := MockRepo.NewMockRegionRepositoryWithFailureResult()
-		regionHandler := apis.NewRegionHandler(mockRegionRepositoryWithFailureResult)
+		regionHandler := apis.NewRegionHandlerImpl(mockRegionRepositoryWithFailureResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, regionHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil, func(rg *gin.RouterGroup) {
+				rg.GET("", regionHandler.GetAllRegions)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)

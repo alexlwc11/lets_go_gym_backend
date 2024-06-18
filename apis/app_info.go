@@ -10,20 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AppInfoHandler struct {
+type AppInfoHandler interface {
+	GetAppInfo(c *gin.Context)
+}
+
+type AppInfoHandlerImpl struct {
 	AppVersionRepo repositories.AppVersionRepository
 	DataInfoRepo   repositories.DataInfoRepository
 }
 
-func NewAppInfoHandler(
+func NewAppInfoHandlerImpl(
 	appVersionRepo repositories.AppVersionRepository,
 	dataInfoRepo repositories.DataInfoRepository,
-) *AppInfoHandler {
-	return &AppInfoHandler{AppVersionRepo: appVersionRepo, DataInfoRepo: dataInfoRepo}
-}
-
-func (aih *AppInfoHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.GET("/app_info", aih.GetAppInfo)
+) AppInfoHandler {
+	return &AppInfoHandlerImpl{AppVersionRepo: appVersionRepo, DataInfoRepo: dataInfoRepo}
 }
 
 // GetAppInfo godoc
@@ -35,14 +35,14 @@ func (aih *AppInfoHandler) RegisterRoutes(engine *gin.RouterGroup) {
 //	@Success		200	{object}	models.AppInfo
 //	@Failure		500
 //	@Router			/app_info [get]
-func (aih *AppInfoHandler) GetAppInfo(c *gin.Context) {
-	appVersion, err := aih.AppVersionRepo.FindAppVersion()
+func (aihi *AppInfoHandlerImpl) GetAppInfo(c *gin.Context) {
+	appVersion, err := aihi.AppVersionRepo.FindAppVersion()
 	if err != nil {
 		log.Printf("Failed to find app version: %s\n", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	dataInfo, err := aih.DataInfoRepo.FindDataInfo()
+	dataInfo, err := aihi.DataInfoRepo.FindDataInfo()
 	if err != nil {
 		log.Printf("Failed to find data info: %s\n", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)

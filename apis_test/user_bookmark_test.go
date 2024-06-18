@@ -10,17 +10,25 @@ import (
 	"lets_go_gym_backend/apis"
 	MockRepo "lets_go_gym_backend/repositories_test"
 	RequestHelper "lets_go_gym_backend/test"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestUserBookmarkWithSuccessResult(t *testing.T) {
 	mockUserBookmarkRepositoryWithSuccessResult := MockRepo.NewMockUserBookmarkRepositoryWithSuccessResult()
-	userBookmarkHandler := apis.NewUserBookmarkHandler(mockUserBookmarkRepositoryWithSuccessResult)
+	userBookmarkHandler := apis.NewUserBookmarkHandlerImpl(mockUserBookmarkRepositoryWithSuccessResult)
 
 	t.Run("GetUserBookmarks_WithNoRecord_Success", func(t *testing.T) {
 		userId := uint(2)
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -44,9 +52,15 @@ func TestUserBookmarkWithSuccessResult(t *testing.T) {
 
 	t.Run("GetUserBookmarks_WithEmptyRecord_Success", func(t *testing.T) {
 		userId := uint(1)
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -70,9 +84,15 @@ func TestUserBookmarkWithSuccessResult(t *testing.T) {
 
 	t.Run("GetUserBookmarks_WithRecord_Success", func(t *testing.T) {
 		userId := uint(4)
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -104,17 +124,29 @@ func TestUserBookmarkWithSuccessResult(t *testing.T) {
 		body, _ := json.Marshal(map[string]interface{}{
 			"updated_sports_center_ids": expectedSportsCenterIds,
 		})
-		putStatusCode, _ := RequestHelper.ServeHttpRequestWithMetadata(http.MethodPut, "/", bytes.NewReader(body), userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		putStatusCode, _ := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodPut, "/", bytes.NewReader(body),
+			func(rg *gin.RouterGroup) {
+				rg.PUT("", userBookmarkHandler.PutUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if putStatusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, putStatusCode)
 		}
 
-		_, getResponseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		_, getResponseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		var data map[string]interface{}
 		err := json.Unmarshal(getResponseBody, &data)
@@ -141,17 +173,29 @@ func TestUserBookmarkWithSuccessResult(t *testing.T) {
 		body, _ := json.Marshal(map[string]interface{}{
 			"updated_sports_center_ids": expectedSportsCenterIds,
 		})
-		putStatusCode, _ := RequestHelper.ServeHttpRequestWithMetadata(http.MethodPut, "/", bytes.NewReader(body), userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		putStatusCode, _ := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodPut, "/", bytes.NewReader(body),
+			func(rg *gin.RouterGroup) {
+				rg.PUT("", userBookmarkHandler.PutUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if putStatusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, putStatusCode)
 		}
 
-		_, getResponseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		_, getResponseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		var data map[string]interface{}
 		err := json.Unmarshal(getResponseBody, &data)
@@ -174,10 +218,15 @@ func TestUserBookmarkWithSuccessResult(t *testing.T) {
 
 func TestUserBookmarkWithFailureResult(t *testing.T) {
 	mockUserBookmarkRepositoryWithFailureResult := MockRepo.NewMockUserBookmarkRepositoryWithFailureResult()
-	userBookmarkHandler := apis.NewUserBookmarkHandler(mockUserBookmarkRepositoryWithFailureResult)
+	userBookmarkHandler := apis.NewUserBookmarkHandlerImpl(mockUserBookmarkRepositoryWithFailureResult)
 
 	t.Run("GetUserBookmarks_WithoutUserId_Failure", func(t *testing.T) {
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, nil)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -189,7 +238,12 @@ func TestUserBookmarkWithFailureResult(t *testing.T) {
 	})
 
 	t.Run("GetUserBookmarks_Failure", func(t *testing.T) {
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodGet, "/", nil, userBookmarkHandler.RegisterRoutes, nil)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", userBookmarkHandler.GetUserBookmarks)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -205,7 +259,12 @@ func TestUserBookmarkWithFailureResult(t *testing.T) {
 		body, _ := json.Marshal(map[string]interface{}{
 			"updated_sports_center_ids": expectedSportsCenterIds,
 		})
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodPut, "/", bytes.NewReader(body), userBookmarkHandler.RegisterRoutes, nil)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodPut, "/", bytes.NewReader(body),
+			func(rg *gin.RouterGroup) {
+				rg.PUT("", userBookmarkHandler.PutUserBookmarks)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -218,9 +277,15 @@ func TestUserBookmarkWithFailureResult(t *testing.T) {
 
 	t.Run("PurUserBookmarks_WithoutBody_Failure", func(t *testing.T) {
 		userId := uint(1)
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodPut, "/", nil, userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodPut, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.PUT("", userBookmarkHandler.PutUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if statusCode != http.StatusBadRequest {
 			t.Errorf("expected %d but received %d", http.StatusBadRequest, statusCode)
@@ -237,9 +302,15 @@ func TestUserBookmarkWithFailureResult(t *testing.T) {
 		body, _ := json.Marshal(map[string]interface{}{
 			"updated_sports_center_ids": expectedSportsCenterIds,
 		})
-		statusCode, responseBody := RequestHelper.ServeHttpRequestWithMetadata(http.MethodPut, "/", bytes.NewReader(body), userBookmarkHandler.RegisterRoutes, map[string]any{
-			"user_id": userId,
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequestWithMetadata(
+			http.MethodPut, "/", bytes.NewReader(body),
+			func(rg *gin.RouterGroup) {
+				rg.PUT("", userBookmarkHandler.PutUserBookmarks)
+			},
+			map[string]any{
+				"user_id": userId,
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)

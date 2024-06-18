@@ -9,14 +9,21 @@ import (
 	"lets_go_gym_backend/apis"
 	MockRepo "lets_go_gym_backend/repositories_test"
 	RequestHelper "lets_go_gym_backend/test"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestDistricts_WithoutAuth(t *testing.T) {
 	t.Run("GetDistricts_Success", func(t *testing.T) {
 		mockDistrictRepositoryWithSuccessResult := MockRepo.NewMockDistrictRepositoryWithSuccessResult()
-		districtHandler := apis.NewDistrictHandler(mockDistrictRepositoryWithSuccessResult)
+		districtHandler := apis.NewDistrictHandlerImpl(mockDistrictRepositoryWithSuccessResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, districtHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", districtHandler.GetAllDistricts)
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -54,9 +61,14 @@ func TestDistricts_WithoutAuth(t *testing.T) {
 
 	t.Run("GetDistricts_Failure", func(t *testing.T) {
 		mockDistrictRepositoryWithFailureResult := MockRepo.NewMockDistrictRepositoryWithFailureResult()
-		districtHandler := apis.NewDistrictHandler(mockDistrictRepositoryWithFailureResult)
+		districtHandler := apis.NewDistrictHandlerImpl(mockDistrictRepositoryWithFailureResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, districtHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", districtHandler.GetAllDistricts)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)

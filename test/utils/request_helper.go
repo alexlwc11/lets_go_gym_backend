@@ -1,4 +1,4 @@
-package test
+package utils
 
 import (
 	"io"
@@ -19,7 +19,7 @@ func ServeHTTPRequest(method string, target string, body io.Reader, registerRout
 	return rr.Code, rr.Body.Bytes()
 }
 
-func ServeHttpRequestWithMetadata(method string, target string, body io.Reader, registerRoutesFunc func(*gin.RouterGroup), metadata map[string]any) (int, []byte) {
+func ServeHTTPRequestWithMetadata(method string, target string, body io.Reader, registerRoutesFunc func(*gin.RouterGroup), metadata map[string]any) (int, []byte) {
 	req := httptest.NewRequest(method, target, body)
 	rr := httptest.NewRecorder()
 	router := gin.Default()

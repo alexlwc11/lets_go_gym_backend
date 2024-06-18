@@ -9,16 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DistrictHandler struct {
+type DistrictHandler interface {
+	GetAllDistricts(c *gin.Context)
+}
+
+type DistrictHandlerImpl struct {
 	DistrictRepo repositories.DistrictRepository
 }
 
-func NewDistrictHandler(districtRepo repositories.DistrictRepository) *DistrictHandler {
-	return &DistrictHandler{DistrictRepo: districtRepo}
-}
-
-func (dh *DistrictHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.GET("", dh.GetAllDistricts)
+func NewDistrictHandlerImpl(districtRepo repositories.DistrictRepository) DistrictHandler {
+	return &DistrictHandlerImpl{DistrictRepo: districtRepo}
 }
 
 type districtsOutDto struct {
@@ -36,7 +36,7 @@ type districtsOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/districts [get]
-func (dh *DistrictHandler) GetAllDistricts(c *gin.Context) {
+func (dh *DistrictHandlerImpl) GetAllDistricts(c *gin.Context) {
 	districts, err := dh.DistrictRepo.FindAll()
 	if err != nil {
 		log.Println(err.Error())

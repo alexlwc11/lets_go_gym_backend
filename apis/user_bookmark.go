@@ -9,17 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserBookmarkHandler struct {
+type UserBookmarkHandler interface {
+	GetUserBookmarks(c *gin.Context)
+	PutUserBookmarks(c *gin.Context)
+}
+
+type UserBookmarkHandlerImpl struct {
 	UserBookmarkRepository repositories.UserBookmarkRepository
 }
 
-func NewUserBookmarkHandler(userBookmarkRepo repositories.UserBookmarkRepository) *UserBookmarkHandler {
-	return &UserBookmarkHandler{UserBookmarkRepository: userBookmarkRepo}
-}
-
-func (ubh *UserBookmarkHandler) RegisterRoutes(engine *gin.RouterGroup) {
-	engine.GET("", ubh.GetUserBookmarks)
-	engine.PUT("", ubh.PutUserBookmarks)
+func NewUserBookmarkHandlerImpl(userBookmarkRepo repositories.UserBookmarkRepository) UserBookmarkHandler {
+	return &UserBookmarkHandlerImpl{UserBookmarkRepository: userBookmarkRepo}
 }
 
 // OutDto for [GetUserBookmarks]
@@ -38,7 +38,7 @@ type userBookmarkOutDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/bookmarks [get]
-func (ubh *UserBookmarkHandler) GetUserBookmarks(c *gin.Context) {
+func (ubh *UserBookmarkHandlerImpl) GetUserBookmarks(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Println("Cannot find user id")
@@ -83,7 +83,7 @@ type putUserBookmarksInDto struct {
 //	@Failure		500
 //	@Security		BearerAuth
 //	@Router			/bookmarks [put]
-func (ubh *UserBookmarkHandler) PutUserBookmarks(c *gin.Context) {
+func (ubh *UserBookmarkHandlerImpl) PutUserBookmarks(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		log.Println("Cannot find user id")

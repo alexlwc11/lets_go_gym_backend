@@ -6,18 +6,25 @@ import (
 	"testing"
 
 	"lets_go_gym_backend/apis"
-	MockRepo "lets_go_gym_backend/repositories_test"
-	RequestHelper "lets_go_gym_backend/test"
+	MockRepo "lets_go_gym_backend/test/repositories_test"
+	RequestHelper "lets_go_gym_backend/test/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestAppInfo(t *testing.T) {
 	t.Run("GetAppInfo_Success", func(t *testing.T) {
 		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
 		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
-		appInfoHandler := apis.NewAppInfoHandler(
+		appInfoHandler := apis.NewAppInfoHandlerImpl(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithSuccessResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/app_info", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("/app_info", appInfoHandler.GetAppInfo)
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -56,10 +63,15 @@ func TestAppInfo(t *testing.T) {
 	t.Run("GetAppInfo_FailWithAppVersionFailureResult", func(t *testing.T) {
 		mockAppVersionRepoWithFailureResult := MockRepo.NewMockAppVersionRepositoryWithFailureResult()
 		mockDataInfoRepoWithSuccessResult := MockRepo.NewMockDataInfoRepositoryWithSuccessResult()
-		appInfoHandler := apis.NewAppInfoHandler(
+		appInfoHandler := apis.NewAppInfoHandlerImpl(
 			mockAppVersionRepoWithFailureResult, mockDataInfoRepoWithSuccessResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/app_info", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("/app_info", appInfoHandler.GetAppInfo)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -73,10 +85,15 @@ func TestAppInfo(t *testing.T) {
 	t.Run("GetAppInfo_FailWithDataInfoFailureResult", func(t *testing.T) {
 		mockAppVersionRepoWithSuccessResult := MockRepo.NewMockAppVersionRepositoryWithSuccessResult()
 		mockDataInfoRepoWithFailureResult := MockRepo.NewMockDataInfoRepositoryWithFailureResult()
-		appInfoHandler := apis.NewAppInfoHandler(
+		appInfoHandler := apis.NewAppInfoHandlerImpl(
 			mockAppVersionRepoWithSuccessResult, mockDataInfoRepoWithFailureResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/app_info", nil, appInfoHandler.RegisterRoutes)
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/app_info", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("/app_info", appInfoHandler.GetAppInfo)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)

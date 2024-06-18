@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"lets_go_gym_backend/apis"
-	MockRepo "lets_go_gym_backend/repositories_test"
-	RequestHelper "lets_go_gym_backend/test"
+	MockRepo "lets_go_gym_backend/test/repositories_test"
+	RequestHelper "lets_go_gym_backend/test/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,11 +16,14 @@ import (
 func TestSportsCenter_WithoutAuth(t *testing.T) {
 	t.Run("GetSportsCenters_Success", func(t *testing.T) {
 		mockSportsCenterRepositoryWithSuccessResult := MockRepo.NewMockSportsCenterRepositoryWithSuccessResult()
-		sportsCenterHandler := apis.NewSportsCenterHandler(mockSportsCenterRepositoryWithSuccessResult)
+		sportsCenterHandler := apis.NewSportsCenterHandlerImpl(mockSportsCenterRepositoryWithSuccessResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, func(rg *gin.RouterGroup) {
-			rg.GET("", sportsCenterHandler.GetAllSportsCenters)
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", sportsCenterHandler.GetAllSportsCenters)
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusOK, statusCode)
@@ -82,11 +85,14 @@ func TestSportsCenter_WithoutAuth(t *testing.T) {
 
 	t.Run("GetSportsCenters_Failure", func(t *testing.T) {
 		mockSportsCenterRepositoryWithFailureResult := MockRepo.NewMockSportsCenterRepositoryWithFailureResult()
-		sportsCenterHandler := apis.NewSportsCenterHandler(mockSportsCenterRepositoryWithFailureResult)
+		sportsCenterHandler := apis.NewSportsCenterHandlerImpl(mockSportsCenterRepositoryWithFailureResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/", nil, func(rg *gin.RouterGroup) {
-			rg.GET("", sportsCenterHandler.GetAllSportsCenters)
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("", sportsCenterHandler.GetAllSportsCenters)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -99,13 +105,15 @@ func TestSportsCenter_WithoutAuth(t *testing.T) {
 
 	t.Run("GetDetailsUrl_Success", func(t *testing.T) {
 		mockSportsCenterRepositoryWithSuccessResult := MockRepo.NewMockSportsCenterRepositoryWithSuccessResult()
-		sportsCenterHandler := apis.NewSportsCenterHandler(mockSportsCenterRepositoryWithSuccessResult)
+		sportsCenterHandler := apis.NewSportsCenterHandlerImpl(mockSportsCenterRepositoryWithSuccessResult)
 
 		sportsCenterId := 1
 		target := fmt.Sprintf("/%d/details_url", sportsCenterId)
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, target, nil, func(rg *gin.RouterGroup) {
-			rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, target, nil, func(rg *gin.RouterGroup) {
+				rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
+			},
+		)
 
 		if statusCode != http.StatusOK {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -127,13 +135,16 @@ func TestSportsCenter_WithoutAuth(t *testing.T) {
 
 	t.Run("GetDetailsUrl_Failure_WithValidIdProvided", func(t *testing.T) {
 		mockSportsCenterRepositoryWithFailureResult := MockRepo.NewMockSportsCenterRepositoryWithFailureResult()
-		sportsCenterHandler := apis.NewSportsCenterHandler(mockSportsCenterRepositoryWithFailureResult)
+		sportsCenterHandler := apis.NewSportsCenterHandlerImpl(mockSportsCenterRepositoryWithFailureResult)
 
 		sportsCenterId := 1
 		target := fmt.Sprintf("/%d/details_url", sportsCenterId)
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, target, nil, func(rg *gin.RouterGroup) {
-			rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, target, nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
+			},
+		)
 
 		if statusCode != http.StatusInternalServerError {
 			t.Errorf("expected %d but received %d", http.StatusInternalServerError, statusCode)
@@ -146,11 +157,14 @@ func TestSportsCenter_WithoutAuth(t *testing.T) {
 
 	t.Run("GetDetailsUrl_Failure_WithInvalidIdProvided", func(t *testing.T) {
 		mockSportsCenterRepositoryWithFailureResult := MockRepo.NewMockSportsCenterRepositoryWithFailureResult()
-		sportsCenterHandler := apis.NewSportsCenterHandler(mockSportsCenterRepositoryWithFailureResult)
+		sportsCenterHandler := apis.NewSportsCenterHandlerImpl(mockSportsCenterRepositoryWithFailureResult)
 
-		statusCode, responseBody := RequestHelper.ServeHTTPRequest(http.MethodGet, "/a/details_url", nil, func(rg *gin.RouterGroup) {
-			rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
-		})
+		statusCode, responseBody := RequestHelper.ServeHTTPRequest(
+			http.MethodGet, "/a/details_url", nil,
+			func(rg *gin.RouterGroup) {
+				rg.GET("/:id/details_url", sportsCenterHandler.GetDetailsUrl)
+			},
+		)
 
 		if statusCode != http.StatusNotFound {
 			t.Errorf("expected %d but received %d", http.StatusNotFound, statusCode)

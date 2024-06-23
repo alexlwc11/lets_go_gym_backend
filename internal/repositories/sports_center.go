@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"fmt"
-	models "lets_go_gym_backend/models"
+	"lets_go_gym_backend/internal/models"
 
 	"gorm.io/gorm"
 )

@@ -2,7 +2,7 @@ package apis
 
 import (
 	"encoding/json"
-	"lets_go_gym_backend/repositories"
+	"lets_go_gym_backend/internal/repositories"
 	"log"
 	"net/http"
 

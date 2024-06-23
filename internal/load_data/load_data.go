@@ -3,7 +3,7 @@ package load_data
 import (
 	"encoding/json"
 	"io"
-	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/internal/models"
 	"log"
 	"os"
 )

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"lets_go_gym_backend/apis"
+	"lets_go_gym_backend/internal/apis"
 	MockRepo "lets_go_gym_backend/test/repositories_test"
 	RequestHelper "lets_go_gym_backend/test/utils"
 

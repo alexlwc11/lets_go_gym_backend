@@ -2,8 +2,8 @@ package repositories_test
 
 import (
 	"fmt"
-	"lets_go_gym_backend/models"
-	"lets_go_gym_backend/repositories"
+	"lets_go_gym_backend/internal/models"
+	"lets_go_gym_backend/internal/repositories"
 
 	"gorm.io/gorm"
 )

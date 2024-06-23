@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
-	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/internal/models"
 
 	"gorm.io/datatypes"
 	"gorm.io/gorm"

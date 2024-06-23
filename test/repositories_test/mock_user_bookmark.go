@@ -3,8 +3,8 @@ package repositories_test
 import (
 	"encoding/json"
 	"errors"
-	"lets_go_gym_backend/models"
-	"lets_go_gym_backend/repositories"
+	"lets_go_gym_backend/internal/models"
+	"lets_go_gym_backend/internal/repositories"
 	"log"
 	"time"
 
@@ -93,9 +93,9 @@ func NewMockUserBookmarkRepositoryWithFailureResult() repositories.UserBookmarkR
 }
 
 func (m *MockUserBookmarkRepositoryWithFailureResult) FindByUserId(userId uint) (*models.UserBookmark, error) {
-	return &models.UserBookmark{}, errors.New("Mocking failure result")
+	return &models.UserBookmark{}, errors.New("mocking failure result")
 }
 
 func (m *MockUserBookmarkRepositoryWithFailureResult) UpdateWithUserId(userId uint, updatedSportsCenterIds []uint) error {
-	return errors.New("Mocking failure result")
+	return errors.New("mocking failure result")
 }

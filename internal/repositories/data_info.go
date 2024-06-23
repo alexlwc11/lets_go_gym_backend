@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/internal/models"
 	"log"
 
 	"gorm.io/gorm"

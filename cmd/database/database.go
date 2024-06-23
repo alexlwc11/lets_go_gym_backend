@@ -1,9 +1,9 @@
-package main
+package database
 
 import (
-	"lets_go_gym_backend/configs"
-	LoadData "lets_go_gym_backend/load_data"
-	"lets_go_gym_backend/models"
+	"lets_go_gym_backend/internal/configs"
+	LoadData "lets_go_gym_backend/internal/load_data"
+	"lets_go_gym_backend/internal/models"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -75,7 +75,7 @@ func proceedSchemaMigration(db *gorm.DB) error {
 
 func loadDefaultDataIfNeeded(db *gorm.DB) error {
 	if db.Take(&models.Region{}).RowsAffected == 0 {
-		defaultRegions, err := LoadData.LoadRegions("./data/regions.json")
+		defaultRegions, err := LoadData.LoadRegions("data/regions.json")
 		if err != nil {
 			log.Println("Failed to load default regions data")
 			return err
@@ -88,7 +88,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) error {
 	}
 
 	if db.Take(&models.District{}).RowsAffected == 0 {
-		defaultDistricts, err := LoadData.LoadDistricts("./data/districts.json")
+		defaultDistricts, err := LoadData.LoadDistricts("data/districts.json")
 		if err != nil {
 			log.Println("Failed to load default districts data")
 			return err
@@ -101,7 +101,7 @@ func loadDefaultDataIfNeeded(db *gorm.DB) error {
 	}
 
 	if db.Take(&models.SportsCenter{}).RowsAffected == 0 {
-		defaultSportsCenters, err := LoadData.LoadSportsCenters("./data/sports_centers.json")
+		defaultSportsCenters, err := LoadData.LoadSportsCenters("data/sports_centers.json")
 		if err != nil {
 			log.Println("Failed to load default sports centers data")
 

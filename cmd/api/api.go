@@ -1,9 +1,9 @@
-package main
+package api
 
 import (
-	"lets_go_gym_backend/apis"
-	"lets_go_gym_backend/docs"
-	"lets_go_gym_backend/repositories"
+	"lets_go_gym_backend/internal/apis"
+	"lets_go_gym_backend/internal/docs"
+	"lets_go_gym_backend/internal/repositories"
 
 	"github.com/gin-gonic/gin"
 	SwaggerFiles "github.com/swaggo/files"

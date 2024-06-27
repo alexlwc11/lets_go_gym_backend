@@ -1,7 +1,7 @@
 # .dockerignore
 
 # do not copy these files to the work dir
-*_test/
+test/
 data/
 config_files/
 docker/

@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /lets-go-gym-backend
 
 # Test stage
 FROM build-stage AS run-test-stage
-RUN go test -v ./...
+RUN go test -v ./test/...
 
 # Release stage
 FROM scratch as run-release-stage

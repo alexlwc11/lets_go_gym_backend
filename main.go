@@ -1,7 +1,9 @@
 package main
 
 import (
-	"lets_go_gym_backend/configs"
+	"lets_go_gym_backend/cmd/api"
+	"lets_go_gym_backend/cmd/database"
+	"lets_go_gym_backend/internal/configs"
 	"log"
 )
 
@@ -29,14 +31,14 @@ func main() {
 	mConfig := configs.LoadConfig()
 
 	// init database connection
-	sqlStorage := NewSQLStorage(mConfig)
+	sqlStorage := database.NewSQLStorage(mConfig)
 	db, err := sqlStorage.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// init router
-	router := NewAPIServer("0.0.0.0:8080", db)
+	router := api.NewAPIServer("0.0.0.0:8080", db)
 	router.Init()
 	router.SetupSwagger()
 	router.Run()

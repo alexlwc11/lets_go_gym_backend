@@ -42,7 +42,7 @@ services:
     networks:
       - "mynet"
     volumes:
-      - ./config_files/api:/app/config_files/api
+      - ./config_files/api/private_config_docker.yaml:/app/config_files/api/private_config.yaml
       - ./data:/app/data
     restart: unless-stopped
 networks:

@@ -22,7 +22,7 @@ func NewUserBookmarkHandlerImpl(userBookmarkRepo repositories.UserBookmarkReposi
 	return &UserBookmarkHandlerImpl{UserBookmarkRepository: userBookmarkRepo}
 }
 
-// OutDto for [GetUserBookmarks]
+// OutDto for [GetUserBookmarks] and [PutUserBookmarks]
 type userBookmarkOutDto struct {
 	SportsCenterIds []uint `json:"sports_center_ids"`
 }
@@ -66,17 +66,12 @@ func (ubh *UserBookmarkHandlerImpl) GetUserBookmarks(c *gin.Context) {
 	c.JSON(http.StatusOK, userBookmarkOutDto{SportsCenterIds: sportsCenterIds})
 }
 
-// InDto for [UpdateUserBookmarks]
-type putUserBookmarksInDto struct {
-	UpdatedSportsCenterIds []uint `json:"updated_sports_center_ids"`
-}
-
 // PutUserBookmarks godoc
 //
 //	@Summary		PutUserBookmarks
 //	@Description	Update user bookmarked sports centers
 //	@Tags			Bookmarks
-//	@Param			userUpdatedSportsCenterIds	body	putUserBookmarksInDto	true	"Updated sports centers IDs"
+//	@Param			userUpdatedSportsCenterIds	body	userBookmarkOutDto	true	"Updated sports centers IDs"
 //	@Success		200
 //	@Failure		400
 //	@Failure		403
@@ -91,14 +86,13 @@ func (ubh *UserBookmarkHandlerImpl) PutUserBookmarks(c *gin.Context) {
 		return
 	}
 
-	var putUserBookmarksInDto putUserBookmarksInDto
-	if err := c.BindJSON(&putUserBookmarksInDto); err != nil {
+	var userBookmarkOutDto userBookmarkOutDto
+	if err := c.BindJSON(&userBookmarkOutDto); err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
-	err := ubh.UserBookmarkRepository.UpdateWithUserId(userId.(uint), putUserBookmarksInDto.UpdatedSportsCenterIds)
+	err := ubh.UserBookmarkRepository.UpdateWithUserId(userId.(uint), userBookmarkOutDto.SportsCenterIds)
 	if err != nil {
 		log.Println(err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)

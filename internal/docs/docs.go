@@ -94,7 +94,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/apis.putUserBookmarksInDto"
+                            "$ref": "#/definitions/apis.userBookmarkOutDto"
                         }
                     }
                 ],
@@ -378,17 +378,6 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.District"
-                    }
-                }
-            }
-        },
-        "apis.putUserBookmarksInDto": {
-            "type": "object",
-            "properties": {
-                "updated_sports_center_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
                     }
                 }
             }

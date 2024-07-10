@@ -12,13 +12,6 @@ definitions:
           $ref: '#/definitions/models.District'
         type: array
     type: object
-  apis.putUserBookmarksInDto:
-    properties:
-      updated_sports_center_ids:
-        items:
-          type: integer
-        type: array
-    type: object
   apis.refreshInDto:
     properties:
       refresh_token:
@@ -187,7 +180,7 @@ paths:
         name: userUpdatedSportsCenterIds
         required: true
         schema:
-          $ref: '#/definitions/apis.putUserBookmarksInDto'
+          $ref: '#/definitions/apis.userBookmarkOutDto'
       responses:
         "200":
           description: OK
